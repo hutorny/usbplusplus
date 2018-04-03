@@ -154,6 +154,7 @@ constexpr MyInterface2 myInterface(InterfaceNumber interfaceNumber,
 	};
 }
 ```
+</details>
 
 ## Descriptor data
 
