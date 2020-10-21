@@ -201,7 +201,7 @@ enum class TestModeSelector_t : uint8_t {
 /** Maximum packet size for endpoint zero (only 8, 16, 32, or 64 are valid) */
 enum class MaxPacketSize0_t : uint8_t {
 	_8  = 8,
-	_16 = 18,
+	_16 = 16,
 	_32 = 32,
 	_64 = 64
 };
@@ -247,10 +247,19 @@ typed {
 protected:
 	using type = S;
 	type value;
-	constexpr typed(type v) : value(byteorder<>::le(v)) {}
 public:
+	constexpr typed(type v) : value(byteorder<>::le(v)) {}
 	constexpr type get() const { return byteorder<>::ne(value); }
 };
+
+template<typename S, S V>
+class __attribute__((__packed__))
+constant : protected typed<S> {
+public:
+	constexpr constant() : typed<S>(V) {}
+	using typed<S>::get;
+};
+
 
 /** Extract first argument from the parameter pack							 */
 template<typename ... List>
@@ -286,7 +295,7 @@ struct index<T, First, List...> {
 };
 
 using string_getter = const uint8_t* (*)();
-using mstring_getter = const uint8_t* (*)(uint16_t, LanguageIdentifier);
+using mstring_getter = const uint8_t* (*)(uint8_t, LanguageIdentifier);
 
 template<typename T>
 inline constexpr T operator_or(T a, T b) {
@@ -448,11 +457,12 @@ TotalLength : protected detail::field<2> {
 	constexpr TotalLength() : detail::field<2>(T::totallength()) {};
 };
 
+/** FixedNumber - base class for a number, inferred from the descriptors */
 template<typename T>
 struct __attribute__((__packed__))
-Number : protected detail::field<1> {
+FixedNumber : protected detail::field<1> {
 	using typename detail::field<1>::type;
-	constexpr Number(type v) : detail::field<1>(v) {};
+	constexpr FixedNumber(type v) : detail::field<1>(v) {};
 };
 
 struct __attribute__((__packed__))
@@ -474,9 +484,10 @@ ID : detail::field<2> {
 };
 
 struct __attribute__((__packed__))
-Index : detail::field<2> {
-	using typename detail::field<2>::type;
-	constexpr Index(type value) : detail::field<2>(value) {}
+Index : detail::field<1> {
+	using typename detail::field<1>::type;
+	constexpr Index(type value) : detail::field<1>(value) {}
+	constexpr Index() : detail::field<1>(0) {}
 };
 
 struct __attribute__((__packed__))
@@ -487,37 +498,42 @@ NumConfigurations : detail::field<1> {
 
 template<typename T>
 struct __attribute__((__packed__))
-NumInterfaces : protected Number<T> {
-	using typename Number<T>::type;
-	using Number<T>::get;
-	constexpr NumInterfaces() : Number<T>(T::numinterfaces()) {}
+NumInterfaces : protected FixedNumber<T> {
+	using typename FixedNumber<T>::type;
+	using FixedNumber<T>::get;
+	constexpr NumInterfaces() : FixedNumber<T>(T::numinterfaces()) {}
 };
 
 template<typename T>
 struct __attribute__((__packed__))
-NumEndpoints : protected Number<T> {
-	using typename Number<T>::type;
-	using Number<T>::get;
-	constexpr NumEndpoints() : Number<T>(T::numendpoints()) {}
+NumEndpoints : protected FixedNumber<T> {
+	using typename FixedNumber<T>::type;
+	using FixedNumber<T>::get;
+	constexpr NumEndpoints() : FixedNumber<T>(T::numendpoints()) {}
 };
 
 
+/** Number - a number to be provided by the user */
+template<uint8_t N = 1>
 struct __attribute__((__packed__))
-InterfaceNumber : detail::field<1> {
-	using typename detail::field<1>::type;
-	constexpr InterfaceNumber(type value) : detail::field<1>(value) {}
+Number : protected detail::field<N> {
+	using typename detail::field<N>::type;
+	constexpr Number(type v) : detail::field<1>(v) {};
 };
 
 struct __attribute__((__packed__))
-AlternateSetting : detail::field<1> {
-	using typename detail::field<1>::type;
-	constexpr AlternateSetting(type value) : detail::field<1>(value) {}
+InterfaceNumber : Number<1> {
+	constexpr InterfaceNumber(type value) : Number<1>(value) {}
 };
 
 struct __attribute__((__packed__))
-ConfigurationValue : detail::field<1> {
-	using typename detail::field<1>::type;
-	constexpr ConfigurationValue(type value) : detail::field<1>(value) {}
+AlternateSetting : Number<1> {
+	constexpr AlternateSetting(type value) : Number<1>(value) {}
+};
+
+struct __attribute__((__packed__))
+ConfigurationValue : Number<1> {
+	constexpr ConfigurationValue(type value) : Number<1>(value) {}
 };
 
 struct __attribute__((__packed__))
@@ -540,7 +556,7 @@ MaxPacketSize : detail::field<2> {
 
 struct __attribute__((__packed__))
 Empty {
-	struct type {};
+	using type = char[0];
 	static constexpr unsigned count = 0;
 };
 
@@ -554,13 +570,17 @@ Array {
 template<class ... Item>
 struct List;
 
-template<class Item0> struct __attribute__((__packed__)) List<Item0> {
+template<class Item0>
+struct __attribute__((__packed__))
+List<Item0> {
 	static constexpr unsigned count = 1;
 	struct __attribute__((__packed__)) type {
 		Item0 item0;
 	};
 };
-template<class Item0, class Item1> struct __attribute__((__packed__)) List<
+template<class Item0, class Item1>
+struct __attribute__((__packed__))
+List<
 		Item0, Item1> {
 	static constexpr unsigned count = 2;
 	struct __attribute__((__packed__)) type {
@@ -568,7 +588,9 @@ template<class Item0, class Item1> struct __attribute__((__packed__)) List<
 		Item1 item1;
 	};
 };
-template<class Item0, class Item1, class Item2> struct __attribute__((__packed__)) List<
+template<class Item0, class Item1, class Item2>
+struct __attribute__((__packed__))
+List<
 		Item0, Item1, Item2> {
 	static constexpr unsigned count = 3;
 	struct __attribute__((__packed__)) type {
@@ -577,7 +599,9 @@ template<class Item0, class Item1, class Item2> struct __attribute__((__packed__
 		Item2 item2;
 	};
 };
-template<class Item0, class Item1, class Item2, class Item3> struct __attribute__((__packed__)) List<
+template<class Item0, class Item1, class Item2, class Item3>
+struct __attribute__((__packed__))
+List<
 		Item0, Item1, Item2, Item3> {
 	static constexpr unsigned count = 4;
 	struct __attribute__((__packed__)) type {
@@ -587,7 +611,9 @@ template<class Item0, class Item1, class Item2, class Item3> struct __attribute_
 		Item3 item3;
 	};
 };
-template<class Item0, class Item1, class Item2, class Item3, class Item4> struct __attribute__((__packed__)) List<
+template<class Item0, class Item1, class Item2, class Item3, class Item4>
+struct __attribute__((__packed__))
+List<
 		Item0, Item1, Item2, Item3, Item4> {
 	static constexpr unsigned count = 5;
 	struct __attribute__((__packed__)) type {
@@ -599,7 +625,9 @@ template<class Item0, class Item1, class Item2, class Item3, class Item4> struct
 	};
 };
 template<class Item0, class Item1, class Item2, class Item3, class Item4,
-		class Item5> struct __attribute__((__packed__)) List<Item0, Item2,
+		class Item5>
+struct __attribute__((__packed__))
+List<Item0, Item2,
 		Item1, Item3, Item4, Item5> {
 	static constexpr unsigned count = 6;
 	struct __attribute__((__packed__)) type {
@@ -612,7 +640,9 @@ template<class Item0, class Item1, class Item2, class Item3, class Item4,
 	};
 };
 template<class Item0, class Item1, class Item2, class Item3, class Item4,
-		class Item5, class Item6> struct __attribute__((__packed__)) List<Item0,
+		class Item5, class Item6>
+struct __attribute__((__packed__))
+List<Item0,
 		Item1, Item2, Item3, Item4, Item5, Item6> {
 	static constexpr unsigned count = 7;
 	struct __attribute__((__packed__)) type {
@@ -626,7 +656,9 @@ template<class Item0, class Item1, class Item2, class Item3, class Item4,
 	};
 };
 template<class Item0, class Item1, class Item2, class Item3, class Item4,
-		class Item5, class Item6, class Item7> struct __attribute__((__packed__)) List<
+		class Item5, class Item6, class Item7>
+struct __attribute__((__packed__))
+List<
 		Item0, Item1, Item2, Item3, Item4, Item5, Item6, Item7> {
 	static constexpr unsigned count = 8;
 	struct __attribute__((__packed__)) type {
@@ -641,6 +673,64 @@ template<class Item0, class Item1, class Item2, class Item3, class Item4,
 	};
 };
 
+template<class Item0, class Item1, class Item2, class Item3, class Item4,
+		class Item5, class Item6, class Item7, class Item8>
+struct __attribute__((__packed__))
+List<Item0, Item1, Item2, Item3, Item4, Item5, Item6, Item7, Item8> {
+	static constexpr unsigned count = 8;
+	struct __attribute__((__packed__)) type {
+		Item0 item0;
+		Item1 item1;
+		Item2 item2;
+		Item3 item3;
+		Item4 item4;
+		Item5 item5;
+		Item6 item6;
+		Item7 item7;
+		Item8 item8;
+	};
+};
+
+template<class Item0, class Item1, class Item2, class Item3, class Item4,
+		class Item5, class Item6, class Item7, class Item8, class Item9>
+struct __attribute__((__packed__))
+List<Item0, Item1, Item2, Item3, Item4, Item5, Item6, Item7, Item8, Item9> {
+	static constexpr unsigned count = 8;
+	struct __attribute__((__packed__)) type {
+		Item0 item0;
+		Item1 item1;
+		Item2 item2;
+		Item3 item3;
+		Item4 item4;
+		Item5 item5;
+		Item6 item6;
+		Item7 item7;
+		Item8 item8;
+		Item9 item9;
+	};
+};
+
+template<class Item0, class Item1, class Item2, class Item3, class Item4,
+		class Item5, class Item6, class Item7, class Item8, class Item9,
+		class Item10>
+struct __attribute__((__packed__))
+List<Item0, Item1, Item2, Item3, Item4, Item5, Item6, Item7, Item8, Item9,
+	Item10> {
+	static constexpr unsigned count = 8;
+	struct __attribute__((__packed__)) type {
+		Item0 item0;
+		Item1 item1;
+		Item2 item2;
+		Item3 item3;
+		Item4 item4;
+		Item5 item5;
+		Item6 item6;
+		Item7 item7;
+		Item8 item8;
+		Item9 item9;
+		Item10 item10;
+	};
+};
 
 /*****************************************************************************/
 /*  USB1 entities 							 								 */
@@ -710,6 +800,7 @@ struct __attribute__((__packed__))
 Configuration {
 	using self = Configuration<InterfaceCollection>;
 	using Interfaces = typename InterfaceCollection::type;
+	using Collection = InterfaceCollection;
 	using Characteristics = ConfigurationCharacteristics_t;
 	struct __attribute__((__packed__))
 	Attributes : private detail::field<1> {
@@ -721,7 +812,7 @@ Configuration {
 		return DescriptorType_t::CONFIGURATION;
 	}
 	static constexpr uint16_t totallength() { return sizeof(self); }
-	static constexpr Number<self> numinterfaces() {
+	static constexpr FixedNumber<self> numinterfaces() {
 		return InterfaceCollection::count;
 	}
 	static constexpr uint8_t length() {	return sizeof(Configuration<Empty>); }
@@ -750,10 +841,10 @@ Interface {
 	static constexpr DescriptorType_t descriptortype() {
 		return DescriptorType_t::INTERFACE;
 	}
-	static constexpr Number<self> numendpoints() {
-		return Number<self>(EndpointCollection::count);
+	static constexpr FixedNumber<self> numendpoints() {
+		return FixedNumber<self>(EndpointCollection::count);
 	}
-	static constexpr uint8_t length() {	return sizeof(self); }
+	static constexpr uint8_t length() {	return sizeof(Interface<Empty>); }
 	const uint8_t* ptr() const { return bLength.ptr(); }
 
 	/* ------------------------------------------------*/
@@ -766,9 +857,14 @@ Interface {
 	InterfaceSubClass			bInterfaceSubClass;
 	InterfaceProtocol			bInterfaceProtocol;
 	Index						iInterface;
+	/* the endpoint descriptors follow the interface descriptor 			 */
 	Endpoints					endpoints;
 };
 
+/*****************************************************************************/
+/** Alternate Settings - is just a list of interfaces			 			 */
+template<typename ... Interfaces>
+struct AlternateSettings : List<Interfaces...> {};
 
 /*****************************************************************************/
 /*  Table 9-13. Standard Endpoint Descriptor								 */
@@ -854,6 +950,7 @@ using usb1::Product;
 using usb1::SerialNumber;
 using usb1::Device;
 using usb1::Interface;
+using usb1::AlternateSettings;
 using usb1::Configuration;
 using usb1::Languages;
 using usb1::String;
@@ -909,7 +1006,7 @@ Device_Qualifier {
 	DeviceClass					bDeviceClass;
 	DeviceSubClass				bDeviceSubClass;
 	DeviceProtocol				bDeviceProtocol;
-	MaxPacketSize0_t				bMaxPacketSize0;
+	MaxPacketSize0_t			bMaxPacketSize0;
 	NumConfigurations			bNumConfigurations;
 	Reserved<1>					bReserved;
 };
@@ -945,7 +1042,7 @@ Other_Speed_Configuration {
 	Length<self> 				bLength;
 	DescriptorType<self> 		bDescriptorType;
 	TotalLength<self>			wTotalLength;
-	Number<self>				bNumInterfaces { numinterfaces() };
+	FixedNumber<self>			bNumInterfaces { numinterfaces() };
 	ConfigurationValue			bConfigurationValue;
 	Index						iConfiguration;
 	Attributes					bmAttributes;
@@ -986,7 +1083,7 @@ Endpoint {
 };
 
 /*****************************************************************************/
-/* Table 9–Z. Standard Interface Association Descriptor						 */
+/* Table 9-Z. Standard Interface Association Descriptor						 */
 /* InterfaceAssociationDescriptor_ecn.pdf									 */
 /** Standard Interface Association Descriptor								 */
 struct __attribute__((__packed__))
@@ -1002,7 +1099,7 @@ InterfaceAssociation {
 	Length<self>				bLength;
 	DescriptorType<self>		bDescriptorType;
 	InterfaceNumber				bFirstInterface;
-	Number<self>				bInterfaceCount;
+	Number<1>					bInterfaceCount;
 	FunctionClass				bFunctionClass;
 	FunctionSubClass			bFunctionSubClass;
 	FunctionProtocol			bFunctionProtocol;
@@ -1045,9 +1142,8 @@ struct StringItem {
 template<LanguageIdentifier LangID, ustring ... List>
 class Strings {
 	static const uint8_t* getlangs() {
-		static const usb1::Languages<1> languages {
-			LanguageList<LangID>::list()
-		};
+		static const typename LanguageList<LangID>::type languages = 
+                    LanguageList<LangID>::list();
 		return languages.ptr();
 	}
 public:
