@@ -401,6 +401,12 @@ AudioInterfaceSubclassCode :
 
 using LockDelayUnits = detail::typed<LockDelayUnits_t>;
 
+struct __attribute__((__packed__))
+UnitID : detail::field<1> {
+	using typename field<1>::type;
+	constexpr UnitID(type value) : detail::field<1>(value) {}
+};
+
 /*****************************************************************************/
 /*  Table 4-1: Audio Channel Cluster Descriptor								 */
 /** Audio Channel Cluster													 */
@@ -569,10 +575,10 @@ Clock_Source {
 	Length<self>				bLength;
 	ACDescriptorType<self>		bDescriptorType;
 	ACInterfaceDescriptorSubtype<self>	bDescriptorSubType;
-	ID							bClockID;
+	UnitID						bClockID;
 	Attributes					bmAttributes;
 	Controls					bmControls;
-	ID							bAssocTerminal;
+	UnitID						bAssocTerminal;
 	Index						iClockSource;
 };
 
@@ -608,7 +614,7 @@ Clock_Selector {
 	Length<self>				bLength;
 	ACDescriptorType<self>		bDescriptorType;
 	ACInterfaceDescriptorSubtype<self>	bDescriptorSubType;
-	ID							bClockID;
+	UnitID						bClockID;
 	NumPins<self>				bNrInPins;
 	Pins						baCSourceID;
 	Control_t					bmControls;
@@ -642,8 +648,8 @@ Clock_Multiplier {
 	Length<self>				bLength;
 	ACDescriptorType<self>		bDescriptorType;
 	ACInterfaceDescriptorSubtype<self>	bDescriptorSubType;
-	ID							bClockID;
-	ID							bCSourceID;
+	UnitID						bClockID;
+	UnitID						bCSourceID;
 	Controls					bmConrols;
 	Index						iClockMultiplier;
 };
@@ -685,10 +691,10 @@ Input_Terminal {
 	Length<self>				bLength;
 	ACDescriptorType<self>		bDescriptorType;
 	ACInterfaceDescriptorSubtype<self>	bDescriptorSubType;
-	ID							bTerminalID;
+	UnitID						bTerminalID;
 	InputTerminalType			wTerminalType;
-	ID							bAssocTerminal;
-	ID							bCSourceID;
+	UnitID						bAssocTerminal;
+	UnitID						bCSourceID;
 	Number<1>					bNrChannels;
 	ChannelConfig				bmChannelConfig;
 	Index						iChannelNames;
@@ -731,11 +737,11 @@ Output_Terminal {
 	Length<self>				bLength;
 	ACDescriptorType<self>		bDescriptorType;
 	ACInterfaceDescriptorSubtype<self>	bDescriptorSubType;
-	ID							bTerminalID;
+	UnitID						bTerminalID;
 	OutputTerminalType			wTerminalType;
-	ID							bAssocTerminal;
-	ID							bSourceID;
-	ID							bCSourceID;
+	UnitID						bAssocTerminal;
+	UnitID						bSourceID;
+	UnitID						bCSourceID;
 	Controls					bmControls;
 	Index						iTerminal;
 };
@@ -783,8 +789,8 @@ Feature_Unit {
 	Length<self>				bLength;
 	ACDescriptorType<self>		bDescriptorType;
 	ACInterfaceDescriptorSubtype<self>	bDescriptorSubType;
-	ID							bUnitID;
-	ID							bSourceID;
+	UnitID						bUnitID;
+	UnitID						bSourceID;
 	Controls					bmaControls[ControlsCount];
 	Index						iFeature;
 };
@@ -848,7 +854,7 @@ AudioStreaming {
 		Length<self>				bLength;
 		ACDescriptorType<self>		bDescriptorType;
 		ASInterfaceDescriptorSubtype<self>	bDescriptorSubType;
-		ID							bTerminalLink;
+		UnitID						bTerminalLink;
 		Controls					bmControls;
 		FormatTypeCode_t			bFormatType;
 		AudioDataFormatType			bmFormats;
