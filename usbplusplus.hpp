@@ -209,6 +209,7 @@ enum class MaxPacketSize0_t : uint8_t {
 /** Table 9-10. Standard Configuration Descriptor							*/
 enum class ConfigurationCharacteristics_t : uint8_t { //TODO _t
 	None,
+	Reserved      = D(7),
 	Self_powered  = D(6),
 	Remote_Wakeup = D(5)
 };
@@ -806,7 +807,8 @@ Configuration {
 	Attributes : private detail::field<1> {
 		constexpr Attributes(Characteristics c1 = Characteristics::None,
 				Characteristics c2 = Characteristics::None)
-		  : field<1>(static_cast<type>(c1) | static_cast<type>(c2)) {}
+		  : field<1>(static_cast<type>(c1) | static_cast<type>(c2) |
+		             static_cast<type>(ConfigurationCharacteristics_t::Reserved)) {}
 	};
 	static constexpr DescriptorType_t descriptortype() {
 		return DescriptorType_t::CONFIGURATION;
