@@ -993,8 +993,11 @@ AS_Isochronous_Audio_Data_Endpoint {
 	static constexpr ACDescriptorType_t descriptortype() {
 		return ACDescriptorType_t::CS_ENDPOINT;
 	}
+	static constexpr uint8_t length() {
+		return sizeof(self) - sizeof(usb2::Endpoint);
+	}
 
-
+	usb2::Endpoint				endpoint;
 	Length<self>				bLength;
 	ACDescriptorType<self>		bDescriptorType;
 	ACEndpointDescriptorSubtype bDescriptorSubtype;
