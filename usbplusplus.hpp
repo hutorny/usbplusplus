@@ -518,7 +518,7 @@ template<uint8_t N = 1>
 struct __attribute__((__packed__))
 Number : protected detail::field<N> {
 	using typename detail::field<N>::type;
-	constexpr Number(type v) : detail::field<1>(v) {};
+	constexpr Number(type v) : detail::field<N>(v) {};
 };
 
 struct __attribute__((__packed__))
