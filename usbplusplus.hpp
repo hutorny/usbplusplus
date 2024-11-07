@@ -497,12 +497,10 @@ NumConfigurations : detail::field<1> {
 	constexpr NumConfigurations(type value) : detail::field<1>(value) {}
 };
 
-template<typename T>
 struct __attribute__((__packed__))
-NumInterfaces : protected FixedNumber<T> {
-	using typename FixedNumber<T>::type;
-	using FixedNumber<T>::get;
-	constexpr NumInterfaces() : FixedNumber<T>(T::numinterfaces()) {}
+NumInterfaces : detail::field<1> {
+	using typename field<1>::type;
+	constexpr NumInterfaces(type value) : detail::field<1>(value) {}
 };
 
 template<typename T>
@@ -814,9 +812,6 @@ Configuration {
 		return DescriptorType_t::CONFIGURATION;
 	}
 	static constexpr uint16_t totallength() { return sizeof(self); }
-	static constexpr FixedNumber<self> numinterfaces() {
-		return InterfaceCollection::count;
-	}
 	static constexpr uint8_t length() {	return sizeof(Configuration<Empty>); }
 	const uint8_t* ptr() const { return bLength.ptr(); }
 
@@ -824,7 +819,7 @@ Configuration {
 	Length<self> 				bLength;
 	DescriptorType<self> 		bDescriptorType;
 	TotalLength<self>			wTotalLength;
-	NumInterfaces<self>			bNumInterfaces;
+	NumInterfaces				bNumInterfaces;
 	ConfigurationValue			bConfigurationValue;
 	Index						iConfiguration;
 	Attributes					bmAttributes;
