@@ -628,8 +628,8 @@ List<
 template<class Item0, class Item1, class Item2, class Item3, class Item4,
 		class Item5>
 struct __attribute__((__packed__))
-List<Item0, Item2,
-		Item1, Item3, Item4, Item5> {
+List<Item0, Item1,
+		Item2, Item3, Item4, Item5> {
 	static constexpr unsigned count = 6;
 	struct __attribute__((__packed__)) type {
 		Item0 item0;
