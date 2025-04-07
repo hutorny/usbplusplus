@@ -29,6 +29,7 @@
 #include <cstdio>
 #include <clocale>
 #include "include/usbplusplus/usbplusplus.hpp"
+#include "include/usbplusplus/uac2.hpp"
 
 /****************************************************************************/
 
@@ -89,7 +90,7 @@ constexpr const Configuration1 configuration1 = {
 	.bLength = {},
 	.bDescriptorType = {},
 	.wTotalLength = {},
-	.bNumInterfaces = { 1 },
+	.bNumInterfaces = 2,
 	ConfigurationValue(1),
 	Index(0),
 	Configuration1::Attributes(ConfigurationCharacteristics_t::Remote_Wakeup),
@@ -135,7 +136,7 @@ constexpr const Configuration2 configuration2 = {
 	.bLength = {},
 	.bDescriptorType = {},
 	.wTotalLength = {},
-	.bNumInterfaces = { 2 },
+	.bNumInterfaces = 2,
 	ConfigurationValue(2),
 	Index(0),
 	Configuration2::Attributes(),
@@ -178,7 +179,7 @@ constexpr const Configuration3 configuration3 = {
 	.bLength = {},
 	.bDescriptorType = {},
 	.wTotalLength = {},
-	.bNumInterfaces = { 3 },
+	.bNumInterfaces = 3,
 	ConfigurationValue(3),
 	Index(0),
 	Configuration3::Attributes(),
