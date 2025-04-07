@@ -71,11 +71,7 @@ enum class SpatialLocations_t : uint32_t {
 	BRC 					= Back_Right_of_Center,
 	//D27..D30: Reserved        =     )
 };
-
-inline constexpr SpatialLocations_t operator|(SpatialLocations_t a,
-		SpatialLocations_t b) {
-	return detail::operator_or(a,b);
-};
+DEFINE_ENUM_CLASS_OR(SpatialLocations_t)
 
 enum class SpatialLocationRaw_t : uint32_t {
 	/* Mutually exclusive with all other spatial locations */
@@ -254,11 +250,7 @@ enum class AudioDataFormatTypeI_t : uint32_t {
 	MULAW						= D(4),
 	TYPE_I_RAW_DATA				= D(31)
 };
-
-inline constexpr AudioDataFormatTypeI_t operator|(AudioDataFormatTypeI_t a,
-		AudioDataFormatTypeI_t b) {
-	return detail::operator_or(a,b);
-}
+DEFINE_ENUM_CLASS_OR(AudioDataFormatTypeI_t)
 
 struct __attribute__((__packed__))
 AudioDataFormatType : private detail::field<4> {
