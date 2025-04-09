@@ -28,7 +28,7 @@
 
 #include <cstdio>
 #include <clocale>
-#include "usbplusplus/usbplusplus.hpp"
+#include "include/usbplusplus/usbplusplus.hpp"
 
 /****************************************************************************/
 
