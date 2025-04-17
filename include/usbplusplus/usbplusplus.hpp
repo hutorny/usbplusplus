@@ -539,7 +539,7 @@ struct __attribute__((__packed__))
 EndpointAddress : detail::field<1> {
 	using typename detail::field<1>::type;
 	constexpr EndpointAddress(type number, EndpointDirection_t dir) :
-		field<1>((number & 0x3) | (static_cast<type>(dir) << 7)) {}
+		field<1>((number & 0x7F) | (static_cast<type>(dir) << 7)) {}
 };
 
 struct __attribute__((__packed__))
