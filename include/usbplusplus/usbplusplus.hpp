@@ -756,7 +756,7 @@ Configuration {
 	}
 	static constexpr uint16_t totallength() { return sizeof(self); }
 	static constexpr uint8_t length() {	return sizeof(Configuration<Empty>); }
-	const uint8_t* ptr() const { return (uint8_t*)this; }
+	const uint8_t* ptr() const { return bLength.ptr(); }
 
 	/* ------------------------------------------------*/
 	Length<self> 				bLength;
