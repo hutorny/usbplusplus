@@ -116,7 +116,10 @@ enum class DataTransferDirection_t : uint8_t {
 	Device_to_Host	= D(7),
 	__mask 			= D(7),
 };
-DEFINE_ENUM_CLASS_AND(DataTransferDirection_t);
+namespace detail { 
+    template<>
+    inline constexpr bool enable_and<DataTransferDirection_t> = true;
+}
 
 /* Table 9-2. Format of Setup Data											*/
 enum class RequestType_t : uint8_t {
@@ -125,7 +128,10 @@ enum class RequestType_t : uint8_t {
 	Vendor			= D(5, 2),
 	__mask			= D(6) | D(5)
 };
-DEFINE_ENUM_CLASS_AND(RequestType_t);
+namespace detail { 
+    template<>
+    inline constexpr bool enable_and<RequestType_t> = true;
+}
 
 /* Table 9-2. Format of Setup Data											*/
 enum class Recipient_t : uint8_t {
@@ -135,7 +141,10 @@ enum class Recipient_t : uint8_t {
 	Other			= D(0, 3),
 	__mask			= D(3) | D(2) | D(1) | D(0)
 };
-DEFINE_ENUM_CLASS_AND(Recipient_t);
+namespace detail { 
+    template<>
+    inline constexpr bool enable_and<Recipient_t> = true;
+}
 
 /* Table 9-4. Standard Request Codes										*/
 enum class RequestCode_t : uint8_t {
@@ -216,7 +225,10 @@ enum class ConfigurationCharacteristics_t : uint8_t { //TODO _t
 	Self_powered  = D(6),
 	Remote_Wakeup = D(5)
 };
-DEFINE_ENUM_CLASS_OR(ConfigurationCharacteristics_t);
+namespace detail { 
+    template<>
+    inline constexpr bool enable_or<ConfigurationCharacteristics_t> = true;
+}
 
 /* Table 9-13. Standard Endpoint Descriptor									*/
 enum class EndpointDirection_t : uint8_t {
@@ -231,8 +243,12 @@ enum class TransferType_t : uint8_t {
 	Interrupt	= 0b11,
 	__mask		= 0b11
 };
-DEFINE_ENUM_CLASS_OR(TransferType_t);
-DEFINE_ENUM_CLASS_AND(TransferType_t);
+namespace detail { 
+    template<>
+    inline constexpr bool enable_or<TransferType_t> = true;
+    template<>
+    inline constexpr bool enable_and<TransferType_t> = true;
+}
 
 namespace detail {
 

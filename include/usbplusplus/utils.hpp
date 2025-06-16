@@ -72,6 +72,32 @@ constexpr auto operator&(T left, U right) -> U
     return static_cast<U>(left) & right;
 }
 
+namespace detail {
+    template<typename T>
+    inline constexpr bool enable_or = false;
+
+    template<typename T>
+    inline constexpr bool enable_and = false;
+}
+
+// Enable OR of the items from the same Enum into the same Enum. Must be enabled explitly
+template <typename T>
+constexpr std::enable_if_t<detail::enable_or<T>, T>
+operator|(T lhs, T rhs)
+{
+    using U = std::underlying_type_t<T>;
+    return static_cast<T>(static_cast<U>(lhs) | static_cast<U>(rhs));
+}
+
+// Enable AND of the items from the same Enum into the same Enum. Must be enabled explitly
+template <typename T>
+constexpr std::enable_if_t<detail::enable_and<T>, T>
+operator&(T lhs, T rhs)
+{
+    using U = std::underlying_type_t<T>;
+    return static_cast<T>(static_cast<U>(lhs) & static_cast<U>(rhs));
+}
+
 // Enable OR of the items from the same Enum into one bitmask
 #define DEFINE_ENUM_CLASS_OR(Enum)                       \
 inline constexpr Enum operator|(Enum Lhs, Enum Rhs)      \
