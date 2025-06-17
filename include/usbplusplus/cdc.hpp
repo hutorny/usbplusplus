@@ -28,6 +28,7 @@
 #pragma once
 
 #include "usbplusplus.hpp"
+#include "utils.hpp"
 
 namespace usbplusplus {
 namespace cdc {
@@ -174,37 +175,18 @@ enum class EthernetStatistics_t : uint32_t {
 /*****************************************************************************/
 /*   AND, OR operators														 */
 /*****************************************************************************/
+} // namespace cdc
 
-inline constexpr CallManagementCapabilities_t 
-operator&(CallManagementCapabilities_t a, CallManagementCapabilities_t b) {
-	return detail::operator_and(a,b);
-}
+template<> constexpr bool enable_or<cdc::CallManagementCapabilities_t> = true;
+template<> constexpr bool enable_and<cdc::CallManagementCapabilities_t> = true;
 
-inline constexpr CallManagementCapabilities_t 
-operator|(CallManagementCapabilities_t a, CallManagementCapabilities_t b) {
-	return detail::operator_or(a,b);
-}
+template<> constexpr bool enable_or<cdc::AbstractControlManagementCapabilities_t> = true;
+template<> constexpr bool enable_and<cdc::AbstractControlManagementCapabilities_t> = true;
 
-inline constexpr AbstractControlManagementCapabilities_t 
-operator&(AbstractControlManagementCapabilities_t a, AbstractControlManagementCapabilities_t b) {
-	return detail::operator_and(a,b);
-}
+template<> constexpr bool enable_or<cdc::EthernetStatistics_t> = true;
+template<> constexpr bool enable_and<cdc::EthernetStatistics_t> = true;
 
-inline constexpr AbstractControlManagementCapabilities_t 
-operator|(AbstractControlManagementCapabilities_t a, AbstractControlManagementCapabilities_t b) {
-	return detail::operator_or(a,b);
-}
-
-inline constexpr EthernetStatistics_t 
-operator&(EthernetStatistics_t a, EthernetStatistics_t b) {
-	return detail::operator_and(a,b);
-}
-
-inline constexpr EthernetStatistics_t 
-operator|(EthernetStatistics_t a, EthernetStatistics_t b) {
-	return detail::operator_or(a,b);
-}
-
+namespace cdc {
 /*****************************************************************************/
 /*   Field types															 */
 /*****************************************************************************/
