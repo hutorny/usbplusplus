@@ -1,6 +1,6 @@
 #pragma once
 #include "usbplusplus.hpp"
-
+#include "utils.hpp"
 /*
  *
  * Audio20 final.pdf
@@ -70,11 +70,6 @@ enum class SpatialLocations_t : uint32_t {
 	Back_Right_of_Center	= D(26),
 	BRC 					= Back_Right_of_Center,
 	//D27..D30: Reserved        =     )
-};
-
-inline constexpr SpatialLocations_t operator|(SpatialLocations_t a,
-		SpatialLocations_t b) {
-	return detail::operator_or(a,b);
 };
 
 enum class SpatialLocationRaw_t : uint32_t {
@@ -254,12 +249,12 @@ enum class AudioDataFormatTypeI_t : uint32_t {
 	MULAW						= D(4),
 	TYPE_I_RAW_DATA				= D(31)
 };
+} // namespace uac2
 
-inline constexpr AudioDataFormatTypeI_t operator|(AudioDataFormatTypeI_t a,
-		AudioDataFormatTypeI_t b) {
-	return detail::operator_or(a,b);
-}
+template<> constexpr bool enable_or<uac2::AudioDataFormatTypeI_t> = true;
+template<> constexpr bool enable_or<uac2::SpatialLocations_t> = true;
 
+namespace uac2 {
 struct __attribute__((__packed__))
 AudioDataFormatType : private detail::field<4> {
 	using typename detail::field<4>::type;
