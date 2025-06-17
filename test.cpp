@@ -89,7 +89,7 @@ constexpr const Configuration1 configuration1 = {
 	.bLength = {},
 	.bDescriptorType = {},
 	.wTotalLength = {},
-	.bNumInterfaces = {},
+	.bNumInterfaces = { 1 },
 	ConfigurationValue(1),
 	Index(0),
 	Configuration1::Attributes(ConfigurationCharacteristics_t::Remote_Wakeup),
@@ -135,7 +135,7 @@ constexpr const Configuration2 configuration2 = {
 	.bLength = {},
 	.bDescriptorType = {},
 	.wTotalLength = {},
-	.bNumInterfaces = {},
+	.bNumInterfaces = { 2 },
 	ConfigurationValue(2),
 	Index(0),
 	Configuration2::Attributes(),
@@ -178,7 +178,7 @@ constexpr const Configuration3 configuration3 = {
 	.bLength = {},
 	.bDescriptorType = {},
 	.wTotalLength = {},
-	.bNumInterfaces = {},
+	.bNumInterfaces = { 3 },
 	ConfigurationValue(3),
 	Index(0),
 	Configuration3::Attributes(),
@@ -251,10 +251,14 @@ using Matrix = MultiStrings<
 	Strings<LanguageIdentifier::Ukrainian,
 										uManufacturer, uProduct, sInterface>>;
 
-
 void uprint(const uint8_t* data) {
-	printf("Len: %d, Type %d, String: '%*ls'\n", data[0], data[1], data[0]/2-1,
-		(const wchar_t*)&data[2]);
+	printf("Len: %d, Type %d, String: '", data[0], data[1]);
+	const char16_t* chr= reinterpret_cast<const char16_t*>(&data[2]);
+	for(unsigned i = data[0]/2-1; i != 0; --i, ++chr) {
+		wchar_t lc = *chr;
+		printf("%lc", lc);
+	}
+	printf("'\n");
 }
 
 void dump(const char* prefix, const uint8_t* data) {
