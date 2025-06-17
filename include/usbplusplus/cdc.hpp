@@ -1,6 +1,6 @@
 /* Copyright (C) 2025 Michiel van Leeuwen <michiel@embeddedacoustics.com>
  *
- * hid.hpp - USB++ classes related to HID
+ * cdc.hpp - USB++ classes related to CDC
  *
  * This file is a part of USB++ library
  *

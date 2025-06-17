@@ -148,15 +148,9 @@ constexpr const CdcConfiguration configuration = {
                         .bInterval = 0,
                     },
                 },
-
         },
 	}
 };
-
-void uprint(const uint8_t* data) {
-	printf("Len: %d, Type %d, String: '%*ls'\n", data[0], data[1], data[0]/2-1,
-		(const wchar_t*)&data[2]);
-}
 
 void dump(const char* prefix, const uint8_t* data) {
 	printf("%s", prefix);
@@ -170,8 +164,6 @@ void dump(const char* prefix, const uint8_t* data) {
 }
 
 int main(int argc, char *argv[]) {
-	setlocale(LC_ALL, "");
-
 	dump("device:         ", deviceDescriptor.ptr());
 	dump("configuration : ", configuration.ptr());
 	return 0;
