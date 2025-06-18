@@ -66,7 +66,7 @@ constexpr const Device deviceDescriptor = {
 using AudioControlInterface = AudioControl<1,
     List<
         Input_Terminal,
-        Feature_Unit<2>,
+        Feature_Unit<3>,
         Output_Terminal
     >
 >;
@@ -99,18 +99,13 @@ constexpr const AudioControlInterface audio_control_interface = {
             .bNrChannels = 2,
             .wChannelConfig = ChannelConfig(SpatialLocations_t::FL | SpatialLocations_t::FR),
         },
-        (Feature_Unit<2>){
+        (Feature_Unit<3>){
             .bUnitID = 3,
             .bSourceID = 2,
             .bmaControls = {
-                Feature_Unit<2>::Controls({
-                    .Mute_Control = Control_t::programmable,
-                    .Volume_Control = Control_t::programmable,
-                }),
-                Feature_Unit<2>::Controls({
-                    .Mute_Control = Control_t::programmable,
-                    .Volume_Control = Control_t::programmable,
-                }),
+                FeatureUnitControls_t::MUTE | FeatureUnitControls_t::VOLUME,
+                FeatureUnitControls_t::MUTE | FeatureUnitControls_t::VOLUME,
+                FeatureUnitControls_t::MUTE | FeatureUnitControls_t::VOLUME,
             },
         },
         (Output_Terminal){

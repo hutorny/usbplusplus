@@ -197,6 +197,20 @@ enum class OutputTerminalType_t : uint16_t {
 											of reproducing speech or music.	 */
 };
 
+/* Table 4-7: Audio Class-Specific Request Codes							 */
+enum class FeatureUnitControls_t : uint16_t {
+	MUTE					= D(0),
+	VOLUME					= D(1),
+	BASS					= D(2),
+	MID						= D(3),
+	TREBLE					= D(4),
+	GRAPHIC_EQUALIZER		= D(5),
+	AUTOMATIC_GAIN			= D(6),
+	DELAY					= D(7),
+	BASS_BOOST				= D(8),
+	LOUDNESS				= D(9),
+};
+
 /* Frmts10.pdf Table A-1, A-2, A-3: Format Type Codes						  */
 enum class FormatTag_t : uint16_t {
 	FORMAT_TYPE_I_UNDEFINED		= 0x0000,
@@ -234,6 +248,7 @@ enum class FormatTypeCode_t : uint8_t {
 } // namespace uac1
 
 template<> constexpr bool enable_or<uac1::SpatialLocations_t> = true;
+template<> constexpr bool enable_or<uac1::FeatureUnitControls_t> = true;
 
 namespace uac1 {
 /*****************************************************************************/
@@ -264,46 +279,8 @@ ASInterfaceDescriptorSubtype : detail::typed<ASInterfaceDescriptorSubtype_t> {
 		detail::typed<ASInterfaceDescriptorSubtype_t>(T::descriptorsubtype()) {}
 };
 
-enum class ReadOnlyControl_t : uint8_t {
-	none			= 0b00,
-	readonly		= 0b01
-};
-
-
-/**
- * 5.2.4.8 Latency Control
- * An audio function must either not support this Control
- * (D1..0 = 0b00 in the bmControls field of the class-specific
- * AudioControl Interface descriptor) or support this read-only Control for
- * every Terminal and Unit within the audio function (D1..0 = 0b01 in the
- * bmControls field of the class-specific AudioControl Interface descriptor).
- */
-using LatencyControl_t = ReadOnlyControl_t;
-
-/** bmControls field contains a set of bit pairs, indicating which
- *  Controls are present at the audio function level (as opposed to at the
- *  addressable entity level) and what their capabilities are.
- *  If a Control is present, it must be Host readable.
- *  If a certain Control is not present then the bit pair must be set to 0b00.
- *  If a Control is present but read-only, the bit pair must be set to 0b01.
- *  If a Control is also Host programmable, the bit pair must be set to 0b11.
- *  The value 0b10 is not allowed.
- */
-enum Control_t : uint8_t {
-	none			= 0b00,
-	readonly		= 0b01,
-	programmable	= 0b11,
-};
-
-
 /* TODO Table A-11: Effect Unit Effect Types								 */
 /* TODO Table A-12: Processing Unit Process Types							 */
-
-/* Table A-13: Audio Class-Specific Endpoint Descriptor Subtypes			 */
-enum class ACEndpointDescriptorSubtype_t : uint8_t {
-	DESCRIPTOR_UNDEFINED		= 0x00,
-	EP_GENERAL					= 0x01
-};
 
 /* Table A-14: Audio Class-Specific Request Codes							 */
 enum class ACRequestCode_t : uint8_t {
@@ -514,24 +491,6 @@ Output_Terminal {
  *	Table 4-6: Selector Unit Descriptor
  */
 
-struct __attribute__((__packed__))
-Feature_Unit_Controls_t {
-	unsigned Mute_Control             :2;
-	unsigned Volume_Control           :2;
-	unsigned Bass_Control             :2;
-	unsigned Mid_Control              :2;
-	unsigned Treble_Control           :2;
-	unsigned Graphic_Equalizer_Control:2;
-	unsigned Automatic_Gain_Control   :2;
-	unsigned Delay_Control            :2;
-	unsigned Bass_Boost_Control       :2;
-	unsigned Loudness_Control         :2;
-	unsigned Input_Gain_Control       :2;
-	unsigned Input_Gain_Pad_Control   :2;
-	unsigned Phase_Inverter_Control   :2;
-	unsigned Underflow_Control        :2;
-	unsigned Overfow_Control          :2;
-};
 
 /*****************************************************************************/
 /*	Table 4-7: Feature Unit Descriptor										 */
@@ -540,8 +499,8 @@ template<uint8_t ControlsCount>
 struct __attribute__((__packed__))
 Feature_Unit {
 	using self = Feature_Unit<ControlsCount>;
-	using Controls = detail::typed<Feature_Unit_Controls_t>;
-	using ControlSize = detail::constant<uint8_t, ControlsCount>;
+	using Controls = detail::typed<FeatureUnitControls_t>;
+	using ControlSize = detail::constant<uint8_t, sizeof(FeatureUnitControls_t)>;
 
 	static constexpr ACDescriptorType_t descriptortype() {
 		return ACDescriptorType_t::CS_INTERFACE;
