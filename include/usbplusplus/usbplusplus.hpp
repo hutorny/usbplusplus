@@ -1052,7 +1052,7 @@ struct LanguageList {
 template<ustring Source>
 struct StringItem {
 	static const uint8_t* get() {
-		static const usb1::String<Source> source;
+		static constexpr usb1::String<Source> source;
 		return source.ptr();
 	}
 };

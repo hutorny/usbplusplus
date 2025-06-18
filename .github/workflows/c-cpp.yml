@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
-    - name: build and run tests
+    - name: build proof tests
       run: |
         make CXXFLAGS="-std=c++14" test
         make CXXFLAGS="-std=c++14" test_cdc
@@ -23,3 +23,19 @@ jobs:
         ./test_cdc
         ./test_uac1
         ./test_uac2
+    - name: build unit tests
+      run: make -C tests/ut -j$(nproc) clean build
+    - name: run unit tests
+      run: make -C tests/ut run
+  compile-tests:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        cxx: [g++, clang++, arm-none-eabi-g++]
+    steps:
+    - uses: actions/checkout@v4
+    - name: install dependencies
+      run: sudo apt-get update && sudo apt-get install -y clang gcc-arm-none-eabi
+    - name: build compile tests
+      run: make -C tests/ct -j$(nproc) STDS="c++14 c++17 c++20 c++23" CXX=${{ matrix.cxx }} clean-all all
+
