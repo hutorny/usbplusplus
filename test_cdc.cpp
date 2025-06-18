@@ -152,7 +152,7 @@ constexpr const CdcConfiguration configuration = {
 	}
 };
 
-void dump(const char* prefix, const uint8_t* data) {
+static void dump(const char* prefix, const uint8_t* data) {
 	printf("%s", prefix);
 	unsigned len = (data[0] >= 4) &&
 			(data[1] == (uint8_t) DescriptorType_t::CONFIGURATION ||
