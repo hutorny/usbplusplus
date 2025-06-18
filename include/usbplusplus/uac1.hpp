@@ -52,23 +52,11 @@ enum class AudioFunctionClassCode_t : uint8_t {
 	AUDIO_FUNCTION	= static_cast<uint8_t>(ClassCode_t::Audio)
 };
 
-/* Table A-2: Audio Function Subclass Codes									 */
-enum class AudioFunctionSubclassCode_t : uint8_t {
-	FUNCTION_SUBCLASS_UNDEFINED	= 0x00
-};
-
-/* Table A-3: Audio Function Protocol Codes									 */
-enum class FunctionProtocol_t : uint8_t {
-	FUNCTION_PROTOCOL_UNDEFINED,
-	AF_VERSION_02_00			= 0x20
-};
-
-/* Table A-4: Audio Interface Class Code									 */
 enum class AudioInterfaceClassCode_t : uint8_t {
 	AUDIO = static_cast<uint8_t>(ClassCode_t::Audio)
 };
 
-/* Table A-5: Audio Interface Subclass Codes								 */
+/* Table A-2: Audio Interface Subclass Codes								 */
 enum class AudioInterfaceSubclassCode_t : uint8_t {
 	INTERFACE_SUBCLASS_UNDEFINED= 0x00,
 	AUDIOCONTROL				= 0x01,
@@ -76,32 +64,12 @@ enum class AudioInterfaceSubclassCode_t : uint8_t {
 	MIDISTREAMING				= 0x03
 };
 
-
-/* Table A-6: Audio Interface Protocol Codes								 */
+/* Table A-3: Audio Interface Protocol Codes								 */
 enum class AudioInterfaceProtocolCode_t : uint8_t {
 	INTERFACE_PROTOCOL_UNDEFINED= 0x00,
-	IP_VERSION_02_00			= 0x20
 };
 
-/* Table A-7: Audio Function Category Codes									 */
-enum class AudioFunctionCategoryCode_t : uint8_t {
-	FUNCTION_SUBCLASS_UNDEFINED = 0x00,
-	DESKTOP_SPEAKER				= 0x01,
-	HOME_THEATER				= 0x02,
-	MICROPHONE					= 0x03,
-	HEADSET						= 0x04,
-	TELEPHONE					= 0x05,
-	CONVERTER					= 0x06,
-	VOICE_SOUND_RECORDER		= 0x07,
-	I_O_BOX						= 0x08,
-	MUSICAL_INSTRUMENT			= 0x09,
-	PRO_AUDIO					= 0x0A,
-	AUDIO_VIDEO					= 0x0B,
-	CONTROL_PANEL 				= 0x0C,
-	OTHER						= 0xFF
-};
-
-/* Table A-8: Audio Class-specific Descriptor Types							*/
+/* Table A-4: Audio Class-specific Descriptor Types							*/
 enum class ACDescriptorType_t : uint8_t {
 	CS_UNDEFINED				=0x20,
 	CS_DEVICE					=0x21,
@@ -111,7 +79,7 @@ enum class ACDescriptorType_t : uint8_t {
 	CS_ENDPOINT					=0x25
 };
 
-/* Table A-9: Audio Class-Specific AC Interface Descriptor Subtypes			 */
+/* Table A-5: Audio Class-Specific AC Interface Descriptor Subtypes			 */
 enum class ACInterfaceDescriptorSubtype_t : uint8_t {
 	AC_DESCRIPTOR_UNDEFINED		= 0x00,
 	HEADER						= 0x01,
@@ -120,25 +88,19 @@ enum class ACInterfaceDescriptorSubtype_t : uint8_t {
 	MIXER_UNIT					= 0x04,
 	SELECTOR_UNIT				= 0x05,
 	FEATURE_UNIT				= 0x06,
-	EFFECT_UNIT					= 0x07,
-	PROCESSING_UNIT				= 0x08,
-	EXTENSION_UNIT				= 0x09,
-	CLOCK_SOURCE				= 0x0A,
-	CLOCK_SELECTOR				= 0x0B,
-	CLOCK_MULTIPLIER			= 0x0C,
-	SAMPLE_RATE_CONVERTER		= 0x0D
+	PROCESSING_UNIT				= 0x07,
+	EXTENSION_UNIT				= 0x08,
 };
 
-/* Table A-10: Audio Class-Specific AS Interface Descriptor Subtypes		 */
+/* Table A-6: Audio Class-Specific AS Interface Descriptor Subtypes		 */
 enum class ASInterfaceDescriptorSubtype_t : uint8_t {
 	AS_DESCRIPTOR_UNDEFINED		= 0x00,
 	AS_GENERAL					= 0x01,
 	FORMAT_TYPE					= 0x02,
-	ENCODER						= 0x03,
-	DECODER						= 0x04
+	FORMAT_SPECIFIC				= 0x03,
 };
 
-/* Termt20 final.pdf, Table 2-1: USB Terminal Types							*/
+/* Termt10.pdf, Table 2-1: USB Terminal Types							*/
 enum class USBTerminalType_t : uint16_t {
 	USB_Undefined				= 0x0100, /* USB Terminal, undefined Type. */
 	USB_streaming				= 0x0101, /* A Terminal dealing with a signal
@@ -153,7 +115,7 @@ enum class USBTerminalType_t : uint16_t {
 											interface. */
 };
 
-/* Termt20 final.pdf, Table 2-2: Input Terminal Types						 */
+/* Termt10.pdf, Table 2-2: Input Terminal Types						 */
 enum class InputTerminalType_t : uint16_t {
 	USB_streaming				= 0x0101,
 	Input_Undefined				= 0x0200, /** Input_Terminal, undefined Type.*/
@@ -197,7 +159,7 @@ enum class OutputTerminalType_t : uint16_t {
 											of reproducing speech or music.	 */
 };
 
-/* Table 4-7: Audio Class-Specific Request Codes							 */
+/* Table 4-7: Control values for Feature Unit Descriptor					 */
 enum class FeatureUnitControls_t : uint16_t {
 	MUTE					= D(0),
 	VOLUME					= D(1),
@@ -315,19 +277,6 @@ public:
 	constexpr FunctionClass() : detail::typed<AudioFunctionClassCode_t>(
 			AudioFunctionClassCode_t::AUDIO_FUNCTION) {}
 };
-
-class __attribute__((__packed__))
-FunctionSubClass : detail::typed<AudioFunctionSubclassCode_t> {
-public:
-	constexpr FunctionSubClass() : detail::typed<AudioFunctionSubclassCode_t>(
-			AudioFunctionSubclassCode_t::FUNCTION_SUBCLASS_UNDEFINED) {}
-};
-
-using AudioFunctionClassCode = detail::constant<
-	AudioFunctionClassCode_t, AudioFunctionClassCode_t::AUDIO_FUNCTION>;
-using AudioFunctionSubclassCode = detail::constant<AudioFunctionSubclassCode_t,
-	AudioFunctionSubclassCode_t::FUNCTION_SUBCLASS_UNDEFINED>;
-using AudioFunctionCategoryCode = detail::typed<AudioFunctionCategoryCode_t>;
 
 using usb2::InterfaceClass;
 using usb2::InterfaceSubClass;
