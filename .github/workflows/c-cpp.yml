@@ -16,8 +16,10 @@ jobs:
         make CXXFLAGS="-std=c++14" test
         make CXXFLAGS="-std=c++14" test_cdc
         make CXXFLAGS="-std=c++14" test_uac1
+        make CXXFLAGS="-std=c++14" test_uac2
     - name: run tests
       run: |
         ./test
         ./test_cdc
         ./test_uac1
+        ./test_uac2
