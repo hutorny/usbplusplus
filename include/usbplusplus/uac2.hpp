@@ -1,5 +1,6 @@
 #pragma once
 #include "usbplusplus.hpp"
+#include "uac1.hpp"
 #include "utils.hpp"
 /*
  *
@@ -72,16 +73,10 @@ enum class SpatialLocations_t : uint32_t {
 	//D27..D30: Reserved        =     )
 };
 
-enum class SpatialLocationRaw_t : uint32_t {
-	/* Mutually exclusive with all other spatial locations */
-		Raw_Data 			= D(31),
-		RD 					= Raw_Data
-};
+using uac1::SpatialLocationRaw_t;
 
 /* Table A-1: Audio Function Class Code										 */
-enum class AudioFunctionClassCode_t : uint8_t {
-	AUDIO_FUNCTION	= static_cast<uint8_t>(ClassCode_t::Audio)
-};
+using uac1::AudioFunctionClassCode_t;
 
 /* Table A-2: Audio Function Subclass Codes									 */
 enum class AudioFunctionSubclassCode_t : uint8_t {
@@ -95,24 +90,13 @@ enum class FunctionProtocol_t : uint8_t {
 };
 
 /* Table A-4: Audio Interface Class Code									 */
-enum class AudioInterfaceClassCode_t : uint8_t {
-	AUDIO = static_cast<uint8_t>(ClassCode_t::Audio)
-};
+using uac1::AudioInterfaceClassCode_t;
 
 /* Table A-5: Audio Interface Subclass Codes								 */
-enum class AudioInterfaceSubclassCode_t : uint8_t {
-	INTERFACE_SUBCLASS_UNDEFINED= 0x00,
-	AUDIOCONTROL				= 0x01,
-	AUDIOSTREAMING				= 0x02,
-	MIDISTREAMING				= 0x03
-};
-
+using uac1::AudioInterfaceSubclassCode_t;
 
 /* Table A-6: Audio Interface Protocol Codes								 */
-enum class AudioInterfaceProtocolCode_t : uint8_t {
-	INTERFACE_PROTOCOL_UNDEFINED= 0x00,
-	IP_VERSION_02_00			= 0x20
-};
+using uac1::AudioInterfaceProtocolCode_t;
 
 /* Table A-7: Audio Function Category Codes									 */
 enum class AudioFunctionCategoryCode_t : uint8_t {
@@ -133,14 +117,7 @@ enum class AudioFunctionCategoryCode_t : uint8_t {
 };
 
 /* Table A-8: Audio Class-specific Descriptor Types							*/
-enum class ACDescriptorType_t : uint8_t {
-	CS_UNDEFINED				=0x20,
-	CS_DEVICE					=0x21,
-	CS_CONFIGURATION			=0x22,
-	CS_STRING					=0x23,
-	CS_INTERFACE				=0x24,
-	CS_ENDPOINT					=0x25
-};
+using uac1::ACDescriptorType_t;
 
 /* Table A-9: Audio Class-Specific AC Interface Descriptor Subtypes			 */
 enum class ACInterfaceDescriptorSubtype_t : uint8_t {
@@ -161,72 +138,16 @@ enum class ACInterfaceDescriptorSubtype_t : uint8_t {
 };
 
 /* Table A-10: Audio Class-Specific AS Interface Descriptor Subtypes		 */
-enum class ASInterfaceDescriptorSubtype_t : uint8_t {
-	AS_DESCRIPTOR_UNDEFINED		= 0x00,
-	AS_GENERAL					= 0x01,
-	FORMAT_TYPE					= 0x02,
-	ENCODER						= 0x03,
-	DECODER						= 0x04
-};
+using uac1::ASInterfaceDescriptorSubtype_t;
 
 /* Termt20 final.pdf, Table 2-1: USB Terminal Types							*/
-enum class USBTerminalType_t : uint16_t {
-	USB_Undefined				= 0x0100, /* USB Terminal, undefined Type. */
-	USB_streaming				= 0x0101, /* A Terminal dealing with a signal
-											carried over an endpoint in an
-											AudioStreaming interface.
-											The AudioStreaming interface
-											descriptor points to the associated
-											Terminal through the bTerminalLink
-											field. */
-	USB_vendor_specific			= 0x01FF, /* A Terminal dealing with a signal
-											carried over a vendor-specific
-											interface. */
-};
+using uac1::USBTerminalType_t;
 
 /* Termt20 final.pdf, Table 2-2: Input Terminal Types						 */
-enum class InputTerminalType_t : uint16_t {
-	USB_streaming				= 0x0101,
-	Input_Undefined				= 0x0200, /** Input_Terminal, undefined Type.*/
-	Microphone					= 0x0201, /** A generic microphone 			 */
-	Desktop_microphone			= 0x0202, /** A microphone normally placed on
-											the desktop or integrated into the
-											monitor.						 */
-	Personal_microphone			= 0x0203, /** A head-mounted or clip-on
-											microphone.						 */
-	Omni_directional_microphone	= 0x0204, /** A microphone designed to pick up
-											voice from more than one speaker at
-											relatively long ranges.			 */
-	Microphone_array			= 0x0205, /** An array of microphones designed
-											for directional processing using
-											host-based signal processing
-											algorithms.						 */
-	Processing_microphone_array	= 0x0206, /** An array of microphones with an
-											embedded signal processor.		 */
-};
+using uac1::InputTerminalType_t;
 
 /* Termt20 final.pdf, Table 2-3: Output Terminal Types						 */
-enum class OutputTerminalType_t : uint16_t {
-	USB_streaming				= 0x0101,
-	Output_Undefined			= 0x0300, /** Output Terminal, undefined Type*/
-	Speaker						= 0x0301, /** A generic speaker 			 */
-	Headphones					= 0x0302, /** A head-mounted audio output
-											device.*/
-	Head_Mounted_Display_Audio	= 0x0303, /** The audio part of a VR head
-											mounted display. 				 */
-	Desktop_speaker				= 0x0304, /** Relatively small speaker or set of
-											speakers normally placed on the
-											desktop or integrated into the
-											monitor.						*/
-	Room_speaker				= 0x0305, /** Larger speaker or set of speakers
-											that are heard well anywhere
-											in the room.					*/
-	Communication_speaker		= 0x0306, /** Speaker or set of speakers
-											designed for voice communication. */
-	Low_frequency_effects_speaker=0x0307, /** Speaker designed for low
-											frequencies (subwoofer). Not capable
-											of reproducing speech or music.	 */
-};
+using uac1::OutputTerminalType_t;
 
 /* Frmts20 final.pdf Table A-1: Format Type Codes							 */
 enum class FormatTypeCode_t : uint8_t {
@@ -263,15 +184,11 @@ AudioDataFormatType : private detail::field<4> {
 
 };
 
-using InputTerminalType = detail::typed<InputTerminalType_t>;
-using OutputTerminalType = detail::typed<OutputTerminalType_t>;
+using InputTerminalType = uac1::InputTerminalType;
+using OutputTerminalType = uac1::OutputTerminalType;
 
 template<typename T>
-struct __attribute__((__packed__))
-ACDescriptorType : detail::typed<ACDescriptorType_t> {
-	constexpr ACDescriptorType() :
-		detail::typed<ACDescriptorType_t>(T::descriptortype()) {}
-};
+using ACDescriptorType = uac1::ACDescriptorType<T>;
 
 template<typename T>
 struct __attribute__((__packed__))
@@ -281,11 +198,7 @@ ACInterfaceDescriptorSubtype : detail::typed<ACInterfaceDescriptorSubtype_t> {
 };
 
 template<typename T>
-struct __attribute__((__packed__))
-ASInterfaceDescriptorSubtype : detail::typed<ASInterfaceDescriptorSubtype_t> {
-	constexpr ASInterfaceDescriptorSubtype() :
-		detail::typed<ASInterfaceDescriptorSubtype_t>(T::descriptorsubtype()) {}
-};
+using ASInterfaceDescriptorSubtype = uac1::ASInterfaceDescriptorSubtype<T>;
 
 enum class ReadOnlyControl_t : uint8_t {
 	none			= 0b00,
@@ -329,38 +242,24 @@ enum class ACEndpointDescriptorSubtype_t : uint8_t {
 };
 
 /* Table A-14: Audio Class-Specific Request Codes							 */
-enum class ACRequestCode_t : uint8_t {
-	REQUEST_CODE_UNDEFINED		= 0x00,
-	CUR							= 0x01,
-	RANGE						= 0x02,
-	MEM							= 0x03
-};
+using uac1::ACRequestCode_t;
 
 /*****************************************************************************/
 /*  Table 4-34: Class-Specific AS Isochronous Audio Data Endpoint Descriptor */
-enum class LockDelayUnits_t : uint8_t {
-	Undefined					= 0,
-	Milliseconds				= 1,
-	DecodedPCMsamples			= 2
-};
+using uac1::LockDelayUnits_t;
 
 /* TODO Table A-15: Encoder Type Codes										*/
 /* TODO Table A-16: Decoder Type Codes										*/
 
-using NrChannels = detail::field<1>;
-using ChannelConfig = detail::typed<SpatialLocations_t>;
+using uac1::NrChannels;
+using uac1::ChannelConfig;
+using uac1::StereoChannelConfig;
 
-constexpr ChannelConfig StereoChannelConfig = ChannelConfig(
-	SpatialLocations_t::Front_Left | SpatialLocations_t::Front_Right);
+using uac1::None;
 
 using None = Empty;
 
-class __attribute__((__packed__))
-FunctionClass : detail::typed<AudioFunctionClassCode_t>{
-public:
-	constexpr FunctionClass() : detail::typed<AudioFunctionClassCode_t>(
-			AudioFunctionClassCode_t::AUDIO_FUNCTION) {}
-};
+using uac1::FunctionClass;
 
 class __attribute__((__packed__))
 FunctionSubClass : detail::typed<AudioFunctionSubclassCode_t> {
@@ -386,21 +285,13 @@ public:
 	using ProtocolCode::get;
 };
 
-using AudioInterfaceClassCode = detail::constant<AudioInterfaceClassCode_t,
-				AudioInterfaceClassCode_t::AUDIO>;
+using uac1::AudioInterfaceClassCode;
 
 template<typename T>
-struct __attribute__((__packed__))
-AudioInterfaceSubclassCode :
-	public detail::constant<AudioInterfaceSubclassCode_t, T::subclass()> {};
+using AudioInterfaceSubclassCode = uac1::AudioInterfaceSubclassCode<T>;
 
-using LockDelayUnits = detail::typed<LockDelayUnits_t>;
-
-struct __attribute__((__packed__))
-UnitID : detail::field<1> {
-	using typename field<1>::type;
-	constexpr UnitID(type value) : detail::field<1>(value) {}
-};
+using uac1::LockDelayUnits;
+using uac1::UnitID;
 
 /*****************************************************************************/
 /*  Table 4-1: Audio Channel Cluster Descriptor								 */
