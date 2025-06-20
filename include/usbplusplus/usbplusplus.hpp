@@ -327,10 +327,10 @@ public:
 	using detail::field<2>::get;
 private:
 	constexpr BCD(type v) : detail::field<2>(v) {}
-	friend constexpr BCD operator "" _bcd(long double v);
+	friend constexpr BCD operator ""_bcd(long double v);
 };
 
-constexpr BCD operator "" _bcd(long double v) {
+constexpr BCD operator ""_bcd(long double v) {
 	return BCD(
 		(static_cast<unsigned>(v/10 ) % 10) << 12 |
 		(static_cast<unsigned>(v    ) % 10) <<  8 |
@@ -344,10 +344,10 @@ public:
 	using detail::field<1>::get;
 private:
 	constexpr MaxPower(type v) : field<1>(v) {}
-	friend constexpr MaxPower operator "" _mA(unsigned long long v);
+	friend constexpr MaxPower operator ""_mA(unsigned long long v);
 };
 
-constexpr MaxPower operator "" _mA(unsigned long long v) {
+constexpr MaxPower operator ""_mA(unsigned long long v) {
 	return MaxPower(v / 2); /* Maximum power expressed in 2 mA units */
 }
 
