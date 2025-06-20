@@ -96,7 +96,10 @@ using uac1::AudioInterfaceClassCode_t;
 using uac1::AudioInterfaceSubclassCode_t;
 
 /* Table A-6: Audio Interface Protocol Codes								 */
-using uac1::AudioInterfaceProtocolCode_t;
+enum class AudioInterfaceProtocolCode_t : uint8_t {
+	INTERFACE_PROTOCOL_UNDEFINED= 0x00,
+	IP_VERSION_02_00			= 0x20
+};
 
 /* Table A-7: Audio Function Category Codes									 */
 enum class AudioFunctionCategoryCode_t : uint8_t {
