@@ -92,14 +92,14 @@ constexpr const AudioControlInterface audio_control_interface = {
         .baCollection = { 1 },
     },
     .units = {
-        (Input_Terminal){
+        Input_Terminal{
             .bTerminalID = 2,
             .wTerminalType = InputTerminalType(InputTerminalType_t::USB_streaming),
             .bAssocTerminal = 0,
             .bNrChannels = 2,
             .wChannelConfig = ChannelConfig(SpatialLocations_t::FL | SpatialLocations_t::FR),
         },
-        (Feature_Unit<3>){
+        Feature_Unit<3>{
             .bUnitID = 3,
             .bSourceID = 2,
             .bmaControls = {
@@ -108,7 +108,7 @@ constexpr const AudioControlInterface audio_control_interface = {
                 FeatureUnitControls_t::MUTE | FeatureUnitControls_t::VOLUME,
             },
         },
-        (Output_Terminal){
+        Output_Terminal{
             .bTerminalID = 4,
             .wTerminalType = OutputTerminalType(OutputTerminalType_t::Headphones),
             .bAssocTerminal = 0,
@@ -141,14 +141,14 @@ constexpr const SpeakerStreamingInterface speaker_interface = {
         },
     },
     .endpoints = {
-        (AS_Isochronous_Audio_Data_Endpoint){
+        AS_Isochronous_Audio_Data_Endpoint{
             .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::OUT),
             .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::Asynchronous),
             .wMaxPacketSize = 196,
             .bInterval = 1,
             .bSynchAddress = EndpointAddress(0x01, EndpointDirection_t::IN),
         },
-        (Endpoint){
+        Endpoint{
             .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::IN),
             .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::No_Synchronization, UsageType_t::Feedback_endpoint),
             .wMaxPacketSize = 3,
@@ -181,7 +181,7 @@ constexpr const MicrophoneStreamingInterface microphone_interface = {
         },
     },
     .endpoints = {
-        (AS_Isochronous_Audio_Data_Endpoint){
+        AS_Isochronous_Audio_Data_Endpoint{
             .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::OUT),
             .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::Synchronous),
             .wMaxPacketSize = 96,
@@ -197,7 +197,7 @@ constexpr const Uac1Configuration configuration = {
     .iConfiguration = 0,
     .bmAttributes = ConfigurationCharacteristics_t::Reserved,
     .bMaxPower = 100_mA,
-    {
+    .interfaces = {
         audio_control_interface,
         speaker_interface_alt0,
         speaker_interface,
@@ -206,7 +206,7 @@ constexpr const Uac1Configuration configuration = {
     },
 };
 
-void dump(const char *prefix, const uint8_t *data, size_t len)
+static void dump(const char *prefix, const uint8_t *data, size_t len)
 {
     printf("%s", prefix);
     for (uint8_t i = 0; i < len; ++i)
