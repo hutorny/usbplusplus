@@ -53,22 +53,22 @@ constexpr const Device deviceDescriptor = {
 	.bLength = {},
 	.bDescriptorType = {},
 	.bcdUsb = 2.00_bcd,
-	DeviceClass::Defined_in_the_Interface_Descriptors,
+	.bDeviceClass = DeviceClass::Defined_in_the_Interface_Descriptors,
 	.bDeviceSubClass = 0,
-	DeviceProtocol(0),
-	MaxPacketSize0_t::_64,
+	.bDeviceProtocol = 0,
+	.bMaxPacketSize0 = MaxPacketSize0_t::_64,
 	.idVendor = 0x0102,
-	IDProduct(0x0304),
+	.idProduct = IDProduct(0x0304),
 	.bcdDevice = 1.00_bcd,
-	Manufacturer(MyStrings::indexof(sManufacturer)),
-	Product(MyStrings::indexof(sProduct)),
-	SerialNumber(MyStrings::indexof(sSerialNumber)),
-	NumConfigurations(2)
+	.iManufacturer = MyStrings::indexof(sManufacturer),
+	.iProduct = MyStrings::indexof(sProduct),
+	.iSerialNumber = MyStrings::indexof(sSerialNumber),
+	.bNumConfigurations = 2
 };
 
 constexpr const  Device_Qualifier deviceQualifier = {
-	.bLength = {},
-	DescriptorType<Device_Qualifier>(),
+	{},
+	{},
 	1.0_bcd,
 	DeviceClass::Defined_in_the_Interface_Descriptors,
 	DeviceSubClass(0),
@@ -87,32 +87,32 @@ using Configuration2 = Configuration<Array<Interface2,2>>;
 using Configuration3 = Configuration<List<Interface1,Interface2, Interface2>>;
 
 constexpr const Configuration1 configuration1 = {
-	.bLength = {},
-	.bDescriptorType = {},
-	.wTotalLength = {},
-	.bNumInterfaces = 2,
+	{},
+	{},
+	{},
+	NumInterfaces(2),
 	ConfigurationValue(1),
 	Index(0),
 	Configuration1::Attributes(ConfigurationCharacteristics_t::Remote_Wakeup),
 	MaxPower(100_mA),
 	{
 		{
-			.bLength = {},
-			.bDescriptorType = {},
+			{},
+			{},
 			InterfaceNumber(1),
 			AlternateSetting(1),
-			.bNumEndpoints = {},
+			{},
 			InterfaceClass::Audio,
 			InterfaceSubClass(0),
 			InterfaceProtocol(0),
 			Index(0)
 		},
 		{
-			.bLength = {},
-			.bDescriptorType = {},
+			{},
+			{},
 			InterfaceNumber(2),
 			AlternateSetting(1),
-			.bNumEndpoints = {},
+			{},
 			InterfaceClass::Audio,
 			InterfaceSubClass(0),
 			InterfaceProtocol(0),
@@ -133,21 +133,21 @@ constexpr Endpoint myEndpoint(uint8_t addr, EndpointDirection_t dir, uint16_t ma
 }
 
 constexpr const Configuration2 configuration2 = {
-	.bLength = {},
-	.bDescriptorType = {},
-	.wTotalLength = {},
-	.bNumInterfaces = 2,
+	{},
+	{},
+	{},
+	NumInterfaces(2),
 	ConfigurationValue(2),
 	Index(0),
 	Configuration2::Attributes(),
 	MaxPower(100_mA),
 	{
 		{
-			.bLength = {},
-			.bDescriptorType = {},
+			{},
+			{},
 			InterfaceNumber(1),
 			AlternateSetting(1),
-			.bNumEndpoints = {},
+			{},
 			InterfaceClass::Audio,
 			InterfaceSubClass(0),
 			InterfaceProtocol(0),
@@ -158,11 +158,11 @@ constexpr const Configuration2 configuration2 = {
 			}
 		},
 		{
-			.bLength = {},
-			.bDescriptorType = {},
+			{},
+			{},
 			InterfaceNumber(2),
 			AlternateSetting(1),
-			.bNumEndpoints = {},
+			{},
 			InterfaceClass::Audio,
 			InterfaceSubClass(0),
 			InterfaceProtocol(0),
@@ -176,32 +176,32 @@ constexpr const Configuration2 configuration2 = {
 };
 
 constexpr const Configuration3 configuration3 = {
-	.bLength = {},
-	.bDescriptorType = {},
-	.wTotalLength = {},
-	.bNumInterfaces = 3,
+	{},
+	{},
+	{},
+	NumInterfaces(3),
 	ConfigurationValue(3),
 	Index(0),
 	Configuration3::Attributes(),
 	MaxPower(100_mA),
 	{
 		{
-			.bLength = {},
-			.bDescriptorType = {},
+			{},
+			{},
 			InterfaceNumber(1),
 			AlternateSetting(1),
-			.bNumEndpoints = {},
+			{},
 			InterfaceClass::Audio,
 			InterfaceSubClass(0),
 			InterfaceProtocol(0),
 			Index(0)
 		},
 		{
-			.bLength = {},
-			.bDescriptorType = {},
+			{},
+			{},
 			InterfaceNumber(2),
 			AlternateSetting(1),
-			.bNumEndpoints = {},
+			{},
 			InterfaceClass::Audio,
 			InterfaceSubClass(0),
 			InterfaceProtocol(0),
@@ -212,11 +212,11 @@ constexpr const Configuration3 configuration3 = {
 			}
 		},
 		{
-			.bLength = {},
-			.bDescriptorType = {},
+			{},
+			{},
 			InterfaceNumber(3),
 			AlternateSetting(1),
-			.bNumEndpoints = {},
+			{},
 			InterfaceClass::Audio,
 			InterfaceSubClass(0),
 			InterfaceProtocol(0),
@@ -230,8 +230,8 @@ constexpr const Configuration3 configuration3 = {
 };
 
 constexpr const Languages<2> Languages2 = {
-	.bLength = {},
-	.bDescriptorType = {},
+	{},
+	{},
 	{
 		LanguageIdentifier::English_United_States,
 		LanguageIdentifier::Ukrainian
@@ -252,7 +252,7 @@ using Matrix = MultiStrings<
 	Strings<LanguageIdentifier::Ukrainian,
 										uManufacturer, uProduct, sInterface>>;
 
-void uprint(const uint8_t* data) {
+static void uprint(const uint8_t* data) {
 	printf("Len: %d, Type %d, String: '", data[0], data[1]);
 	const char16_t* chr= reinterpret_cast<const char16_t*>(&data[2]);
 	for(unsigned i = data[0]/2-1; i != 0; --i, ++chr) {
@@ -262,7 +262,7 @@ void uprint(const uint8_t* data) {
 	printf("'\n");
 }
 
-void dump(const char* prefix, const uint8_t* data) {
+static void dump(const char* prefix, const uint8_t* data) {
 	printf("%s", prefix);
 	unsigned len = (data[0] >= 4) &&
 			(data[1] == (uint8_t) DescriptorType_t::CONFIGURATION ||
