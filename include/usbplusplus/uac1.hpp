@@ -678,7 +678,7 @@ Type_I_ContinuousSampleFrequency
 /*****************************************************************************/
 /*  Frmts10.pdf, Table 2-3: Discrete Number of Sampling Frequencies			 */
 /** Type I Discrete Number of Sampling Frequencies							 */
-template<size_t NSampleFrequencies>
+template<std::size_t NSampleFrequencies>
 struct __attribute__((__packed__))
 Type_I_DiscreteSampleFrequency
 {
