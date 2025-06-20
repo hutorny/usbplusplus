@@ -95,7 +95,7 @@ constexpr const AudioControlInterface audio_control_interface = {
         .bmControls = LatencyControl_t::none,
     },
     .units = {
-        (Clock_Source){
+        Clock_Source{
             .bClockID = 1,
             .bmAttributes = Clock_Source::Attributes(ClockType_t::Internal_fixed_Clock),
             .bmControls = Clock_Source::Controls({
@@ -104,7 +104,7 @@ constexpr const AudioControlInterface audio_control_interface = {
             }),
             .bAssocTerminal = 0,
         },
-        (Input_Terminal){
+        Input_Terminal{
             .bTerminalID = 2,
             .wTerminalType = InputTerminalType(InputTerminalType_t::USB_streaming),
             .bAssocTerminal = 0,
@@ -113,7 +113,7 @@ constexpr const AudioControlInterface audio_control_interface = {
             .bmChannelConfig = ChannelConfig(SpatialLocations_t::FL | SpatialLocations_t::FR),
             .bmControls = Input_Terminal::Controls(),
         },
-        (Feature_Unit<2>){
+        Feature_Unit<2>{
             .bUnitID = 3,
             .bSourceID = 2,
             .bmaControls = {
@@ -127,7 +127,7 @@ constexpr const AudioControlInterface audio_control_interface = {
                 }),
             },
         },
-        (Output_Terminal){
+        Output_Terminal{
             .bTerminalID = 4,
             .wTerminalType = OutputTerminalType(OutputTerminalType_t::Headphones),
             .bAssocTerminal = 0,
@@ -160,7 +160,7 @@ constexpr const SpeakerStreamingInterface audio_speaker_interface_alt1 = {
         },
     },
     .endpoints = {
-        (AS_Isochronous_Audio_Data_Endpoint){
+        AS_Isochronous_Audio_Data_Endpoint{
             .endpoint = {
                 .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::IN),
                 .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous),
@@ -187,17 +187,6 @@ constexpr const HeadsetConfiguration configuration = {
         audio_speaker_interface_alt1,
     },
 };
-
-constexpr Endpoint myEndpoint(uint8_t addr, EndpointDirection_t dir, uint16_t maxPacketSize)
-{
-    return {
-        Length<Endpoint>(),
-        {},
-        EndpointAddress(addr, dir),
-        Endpoint::Attributes(TransferType_t::Isochronous),
-        MaxPacketSize(maxPacketSize),
-        Interval(1)};
-}
 
 void dump(const char *prefix, const uint8_t *data)
 {
