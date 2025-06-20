@@ -252,8 +252,10 @@ using uac1::LockDelayUnits_t;
 /* TODO Table A-16: Decoder Type Codes										*/
 
 using uac1::NrChannels;
-using uac1::ChannelConfig;
-using uac1::StereoChannelConfig;
+using ChannelConfig = detail::typed<SpatialLocations_t>;
+
+constexpr ChannelConfig StereoChannelConfig = ChannelConfig(
+	SpatialLocations_t::Front_Left | SpatialLocations_t::Front_Right);
 
 using uac1::None;
 
