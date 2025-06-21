@@ -209,8 +209,8 @@ enum class FormatTypeCode_t : uint8_t {
 /*****************************************************************************/
 } // namespace uac1
 
-template<> constexpr bool enable_or<uac1::SpatialLocations_t> = true;
-template<> constexpr bool enable_or<uac1::FeatureUnitControls_t> = true;
+template<> inline constexpr bool enable_or<uac1::SpatialLocations_t> = true;
+template<> inline constexpr bool enable_or<uac1::FeatureUnitControls_t> = true;
 
 namespace uac1 {
 /*****************************************************************************/

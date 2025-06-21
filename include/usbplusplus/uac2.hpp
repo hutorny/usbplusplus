@@ -175,8 +175,8 @@ enum class AudioDataFormatTypeI_t : uint32_t {
 };
 } // namespace uac2
 
-template<> constexpr bool enable_or<uac2::AudioDataFormatTypeI_t> = true;
-template<> constexpr bool enable_or<uac2::SpatialLocations_t> = true;
+template<> inline constexpr bool enable_or<uac2::AudioDataFormatTypeI_t> = true;
+template<> inline constexpr bool enable_or<uac2::SpatialLocations_t> = true;
 
 namespace uac2 {
 struct __attribute__((__packed__))

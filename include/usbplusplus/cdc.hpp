@@ -177,14 +177,14 @@ enum class EthernetStatistics_t : uint32_t {
 /*****************************************************************************/
 } // namespace cdc
 
-template<> constexpr bool enable_or<cdc::CallManagementCapabilities_t> = true;
-template<> constexpr bool enable_and<cdc::CallManagementCapabilities_t> = true;
+template<> inline constexpr bool enable_or<cdc::CallManagementCapabilities_t> = true;
+template<> inline constexpr bool enable_and<cdc::CallManagementCapabilities_t> = true;
 
-template<> constexpr bool enable_or<cdc::AbstractControlManagementCapabilities_t> = true;
-template<> constexpr bool enable_and<cdc::AbstractControlManagementCapabilities_t> = true;
+template<> inline constexpr bool enable_or<cdc::AbstractControlManagementCapabilities_t> = true;
+template<> inline constexpr bool enable_and<cdc::AbstractControlManagementCapabilities_t> = true;
 
-template<> constexpr bool enable_or<cdc::EthernetStatistics_t> = true;
-template<> constexpr bool enable_and<cdc::EthernetStatistics_t> = true;
+template<> inline constexpr bool enable_or<cdc::EthernetStatistics_t> = true;
+template<> inline constexpr bool enable_and<cdc::EthernetStatistics_t> = true;
 
 namespace cdc {
 /*****************************************************************************/
