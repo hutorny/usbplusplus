@@ -30,6 +30,8 @@
 #include "include/usbplusplus/usbplusplus.hpp"
 #include "include/usbplusplus/uac1.hpp"
 
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers" // some field initializers are skipped by intent
+
 /****************************************************************************/
 
 using namespace usbplusplus;
@@ -214,7 +216,7 @@ static void dump(const char *prefix, const uint8_t *data, size_t len)
     printf(" }\n");
 }
 
-int main(int argc, char *argv[])
+int main(int, char *[])
 {
     setlocale(LC_ALL, "");
 

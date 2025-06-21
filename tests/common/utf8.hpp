@@ -14,7 +14,7 @@
 
 inline std::string utf8(char16_t chr) {
     auto code = static_cast<std::uint16_t>(chr);
-    static constexpr auto c = [](unsigned sign, unsigned code) { return static_cast<char>(sign | (code & 0x3FU)); };
+    static constexpr auto c = [](unsigned sign, unsigned cod) { return static_cast<char>(sign | (cod & 0x3FU)); };
 
     if (code < 0x80U) {
         return { static_cast<char>(code) };

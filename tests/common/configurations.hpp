@@ -43,7 +43,8 @@ constexpr const Configuration1 TestUAC2Configuration_1 = {
             InterfaceClass::Audio,
             InterfaceSubClass(0),
             InterfaceProtocol(0),
-            Index(0)
+            Index(0),
+            {}
         },
         {
             {},
@@ -54,7 +55,8 @@ constexpr const Configuration1 TestUAC2Configuration_1 = {
             InterfaceClass::Audio,
             InterfaceSubClass(0),
             InterfaceProtocol(0),
-            Index(0)
+            Index(0),
+            {}
         }
     }
 };
@@ -135,7 +137,8 @@ constexpr const Configuration3 TestUAC2Configuration_3 = {
             InterfaceClass::Audio,
             InterfaceSubClass(0),
             InterfaceProtocol(0),
-            Index(0)
+            Index(0),
+            {}
         },
         {
             {},

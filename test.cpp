@@ -105,7 +105,8 @@ constexpr const Configuration1 configuration1 = {
 			InterfaceClass::Audio,
 			InterfaceSubClass(0),
 			InterfaceProtocol(0),
-			Index(0)
+			Index(0),
+			{}
 		},
 		{
 			{},
@@ -116,7 +117,8 @@ constexpr const Configuration1 configuration1 = {
 			InterfaceClass::Audio,
 			InterfaceSubClass(0),
 			InterfaceProtocol(0),
-			Index(0)
+			Index(0),
+			{}
 		}
 	}
 };
@@ -194,7 +196,8 @@ constexpr const Configuration3 configuration3 = {
 			InterfaceClass::Audio,
 			InterfaceSubClass(0),
 			InterfaceProtocol(0),
-			Index(0)
+			Index(0),
+			{}
 		},
 		{
 			{},
@@ -265,15 +268,15 @@ static void uprint(const uint8_t* data) {
 static void dump(const char* prefix, const uint8_t* data) {
 	printf("%s", prefix);
 	unsigned len = (data[0] >= 4) &&
-			(data[1] == (uint8_t) DescriptorType_t::CONFIGURATION ||
-			 data[1] == (uint8_t) DescriptorType_t::OTHER_SPEED ) ?
+			(data[1] == static_cast<uint8_t>(DescriptorType_t::CONFIGURATION) ||
+			 data[1] == static_cast<uint8_t>(DescriptorType_t::OTHER_SPEED) ) ?
 			* reinterpret_cast<const uint16_t*>(data+2) : data[0];
 	for(uint8_t i = 0; i < len; ++i )
 		printf("%c 0x%2.2X", (i?',':'{'), data[i]);
 	printf(" }\n");
 }
 
-int main(int argc, char *argv[]) {
+int main(int, char *[]) {
 	setlocale(LC_ALL, "");
 	printf("indexof test: %d, %d, %d, %d, %d\n",
 		MyStrings::indexof(sManufacturer),
