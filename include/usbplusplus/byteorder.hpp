@@ -87,12 +87,12 @@ inline constexpr int8_t byteorder<endian::big>::le<int8_t>(int8_t v) {
 
 template<>
 inline constexpr uint16_t byteorder<endian::big>::le<uint16_t>(uint16_t v) {
-	return (v << 8) | (v >> 8);
+	return static_cast<uint16_t>((v << 8) | (v >> 8));
 }
 
 template<>
 inline constexpr int16_t byteorder<endian::big>::le<int16_t>(int16_t v) {
-	return le<uint16_t>(v);
+	return static_cast<int16_t>(le<uint16_t>(static_cast<uint16_t>(v)));
 }
 
 template<>
@@ -104,7 +104,7 @@ constexpr uint32_t byteorder<endian::big>::le<uint32_t>(uint32_t v) {
 
 template<>
 constexpr int32_t byteorder<endian::big>::le<int32_t>(int32_t v) {
-	return le<uint32_t>(v);
+	return static_cast<int32_t>(le<uint32_t>(static_cast<uint32_t>(v)));
 }
 
 template<>
@@ -116,7 +116,7 @@ constexpr uint64_t byteorder<endian::big>::le<uint64_t>(uint64_t v) {
 
 template<>
 constexpr int64_t byteorder<endian::big>::le<int64_t>(int64_t v) {
-	return le<uint64_t>(v);
+	return static_cast<int64_t>(le<uint64_t>(static_cast<uint64_t>(v)));
 }
 
 

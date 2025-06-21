@@ -239,7 +239,7 @@ template<> constexpr bool enable_and<TransferType_t> = true;
 
 namespace detail {
 
-template<int Size, typename Signed = unsigned>
+template<unsigned Size, typename Signed = unsigned>
 class __attribute__((__packed__))
 field {
 protected:
@@ -313,7 +313,7 @@ using mstring_getter = const uint8_t* (*)(uint8_t, LanguageIdentifier);
 /*   Field types															 */
 /*****************************************************************************/
 
-class __attribute__((__packed__))
+struct __attribute__((__packed__))
 RequestType : protected detail::field<1> {
 	constexpr RequestType(DataTransferDirection_t direction,
 			RequestType_t requesttype, Recipient_t recipient) :
@@ -331,11 +331,11 @@ private:
 };
 
 constexpr BCD operator ""_bcd(long double v) {
-	return BCD(
+	return BCD(static_cast<uint16_t>(
 		(static_cast<unsigned>(v/10 ) % 10) << 12 |
 		(static_cast<unsigned>(v    ) % 10) <<  8 |
 		(static_cast<unsigned>(v*10 ) % 10) <<  4 |
-		(static_cast<unsigned>(v*100) % 10));
+		(static_cast<unsigned>(v*100) % 10)));
 }
 
 class __attribute__((__packed__))
@@ -348,7 +348,7 @@ private:
 };
 
 constexpr MaxPower operator ""_mA(unsigned long long v) {
-	return MaxPower(v / 2); /* Maximum power expressed in 2 mA units */
+	return MaxPower(static_cast<uint8_t>(v / 2)); /* Maximum power expressed in 2 mA units */
 }
 
 struct __attribute__((__packed__))
@@ -358,7 +358,7 @@ Interval : detail::field<1> {
 };
 
 
-template<int Size>
+template<unsigned Size>
 class __attribute__((__packed__))
 Reserved : detail::field<Size> {
 public:
@@ -399,38 +399,38 @@ FixedNumber : protected detail::field<1> {
 struct __attribute__((__packed__))
 SubClassCode : detail::field<1> {
 	using typename detail::field<1>::type;
-	constexpr SubClassCode(type value) : detail::field<1>(value) {}
+	constexpr SubClassCode(type val) : detail::field<1>(val) {}
 };
 
 struct __attribute__((__packed__))
 ProtocolCode : detail::field<1> {
 	using typename detail::field<1>::type;
-	constexpr ProtocolCode(type value) : detail::field<1>(value) {}
+	constexpr ProtocolCode(type val) : detail::field<1>(val) {}
 };
 
 struct __attribute__((__packed__))
 ID : detail::field<2> {
 	using typename field<2>::type;
-	constexpr ID(type value) : detail::field<2>(value) {}
+	constexpr ID(type val) : detail::field<2>(val) {}
 };
 
 struct __attribute__((__packed__))
 Index : detail::field<1> {
 	using typename detail::field<1>::type;
-	constexpr Index(type value) : detail::field<1>(value) {}
+	constexpr Index(type val) : detail::field<1>(val) {}
 	constexpr Index() : detail::field<1>(0) {}
 };
 
 struct __attribute__((__packed__))
 NumConfigurations : detail::field<1> {
 	using typename field<1>::type;
-	constexpr NumConfigurations(type value) : detail::field<1>(value) {}
+	constexpr NumConfigurations(type val) : detail::field<1>(val) {}
 };
 
 struct __attribute__((__packed__))
 NumInterfaces : detail::field<1> {
 	using typename field<1>::type;
-	constexpr NumInterfaces(type value) : detail::field<1>(value) {}
+	constexpr NumInterfaces(type val) : detail::field<1>(val) {}
 };
 
 template<typename T>
@@ -452,24 +452,24 @@ Number : protected detail::field<N> {
 
 struct __attribute__((__packed__))
 InterfaceNumber : Number<1> {
-	constexpr InterfaceNumber(type value) : Number<1>(value) {}
+	constexpr InterfaceNumber(type val) : Number<1>(val) {}
 };
 
 struct __attribute__((__packed__))
 AlternateSetting : Number<1> {
-	constexpr AlternateSetting(type value) : Number<1>(value) {}
+	constexpr AlternateSetting(type val) : Number<1>(val) {}
 };
 
 struct __attribute__((__packed__))
 ConfigurationValue : Number<1> {
-	constexpr ConfigurationValue(type value) : Number<1>(value) {}
+	constexpr ConfigurationValue(type val) : Number<1>(val) {}
 };
 
 struct __attribute__((__packed__))
 EndpointAddress : detail::field<1> {
 	using typename detail::field<1>::type;
 	constexpr EndpointAddress(type number, EndpointDirection_t dir) :
-		field<1>((number & 0x7F) | (static_cast<type>(dir) << 7)) {}
+		field<1>(static_cast<type>((number & 0x7F) | (static_cast<type>(dir) << 7))) {}
 };
 
 struct __attribute__((__packed__))
@@ -853,8 +853,8 @@ struct String {
 	constexpr const uint8_t * ptr() const {	return bLength.ptr(); }
 
 	/* ------------------------------------------------*/
-	Length<self>				bLength;
-	DescriptorType<self>		bDescriptorType;
+	Length<self>				bLength {};
+	DescriptorType<self>		bDescriptorType {};
 	utf16le<len> 				bString {string};
 };
 
@@ -1077,7 +1077,7 @@ public:
 
 	/** Returns pointer to a string descriptor, including String Descriptor Zero
 	 * LanguageIdentifier is ignored										 */
-	static const uint8_t* get(Index::type index, LanguageIdentifier l= LangID) {
+	static const uint8_t* get(Index::type index, LanguageIdentifier = LangID) {
 		static constexpr detail::string_getter items[] {
 			StringItem<List>::get ...
 		};

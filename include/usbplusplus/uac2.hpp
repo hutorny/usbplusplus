@@ -522,9 +522,9 @@ Clock_Multiplier {
 	struct __attribute__((__packed__))
 	Controls : private detail::field<1> {
 		constexpr Controls(Control_t clockNumeratorControl = Control_t::none,
-			Control_t clockDenominatorControl = Control_t::none) : field<1>(
+			Control_t clockDenominatorControl = Control_t::none) : field<1>(static_cast<type>(
 					D(0,static_cast<type>(clockNumeratorControl)) |
-					D(2,static_cast<type>(clockDenominatorControl))) {}
+					D(2,static_cast<type>(clockDenominatorControl)))) {}
 	};
 
 	static constexpr ACDescriptorType_t descriptortype() {
@@ -561,14 +561,14 @@ Input_Terminal {
 			Control_t clusterControl = Control_t::none,
 			Control_t underflowControl = Control_t::none,
 			Control_t overflowControl = Control_t::none
-			) : field<2>(
+			) : field<2>(static_cast<type>(
 					D( 0,static_cast<type>(copyProtectControl)) |
 					D( 2,static_cast<type>(connectorControl)) |
 					D( 4,static_cast<type>(overloadControl)) |
 					D( 6,static_cast<type>(clusterControl)) |
 					D( 8,static_cast<type>(underflowControl)) |
 					D(10,static_cast<type>(overflowControl))
-					) {}
+					)) {}
 	};
 
 	static constexpr ACDescriptorType_t descriptortype() {
@@ -608,13 +608,13 @@ Output_Terminal {
 			Control_t overloadControl = Control_t::none,
 			Control_t underflowControl = Control_t::none,
 			Control_t overflowControl = Control_t::none
-			) : field<2>(
+			) : field<2>(static_cast<type>(
 					D( 0,static_cast<type>(copyProtectControl)) |
 					D( 2,static_cast<type>(connectorControl)) |
 					D( 4,static_cast<type>(overloadControl)) |
 					D( 6,static_cast<type>(underflowControl)) |
 					D( 8,static_cast<type>(overflowControl))
-					) {}
+					)) {}
 	};
 
 	static constexpr ACDescriptorType_t descriptortype() {
@@ -725,9 +725,9 @@ AudioStreaming {
 			constexpr Controls(
 				ReadOnlyControl_t activeAlternateSetting = ReadOnlyControl_t::none,
 				ReadOnlyControl_t validAlternateSetting = ReadOnlyControl_t::none)
-				  : field<1>(
+				  : field<1>(static_cast<type>(
 						D( 0,static_cast<type>(activeAlternateSetting)) |
-						D( 2,static_cast<type>(validAlternateSetting))) {}
+						D( 2,static_cast<type>(validAlternateSetting)))) {}
 		};
 
 		static constexpr ACDescriptorType_t descriptortype() {
@@ -880,11 +880,11 @@ AS_Isochronous_Audio_Data_Endpoint {
 			Control_t pitchControl = Control_t::none,
 			Control_t dataOverrunControl = Control_t::none,
 			Control_t dataUnderrunControl = Control_t::none
-			) : field<1>(
+			) : field<1>(static_cast<type>(
 					D( 0,static_cast<type>(pitchControl)) |
 					D( 2,static_cast<type>(dataOverrunControl)) |
 					D( 4,static_cast<type>(dataUnderrunControl))
-					) {}
+					)) {}
 	};
 
 	static constexpr ACDescriptorType_t descriptortype() {
