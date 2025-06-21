@@ -13,10 +13,10 @@ jobs:
     - uses: actions/checkout@v4
     - name: build proof tests
       run: |
-        make CXXFLAGS="-std=c++14" test
-        make CXXFLAGS="-std=c++14" test_cdc
-        make CXXFLAGS="-std=c++14" test_uac1
-        make CXXFLAGS="-std=c++14" test_uac2
+        make CXXFLAGS="-std=c++14" -f tests/common/make.mk test
+        make CXXFLAGS="-std=c++14" -f tests/common/make.mk test_cdc
+        make CXXFLAGS="-std=c++14" -f tests/common/make.mk test_uac1
+        make CXXFLAGS="-std=c++14" -f tests/common/make.mk test_uac2
     - name: run tests
       run: |
         ./test
