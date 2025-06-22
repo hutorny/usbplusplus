@@ -307,6 +307,16 @@ struct index<T, First, List...> {
 using string_getter = const uint8_t* (*)();
 using mstring_getter = const uint8_t* (*)(uint8_t, LanguageIdentifier);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wpragmas"
+#pragma GCC diagnostic ignored "-Wzero-length-array"
+
+class __attribute__((__packed__)) empty_struct {};
+// zero-length array by intent
+using empty_type = empty_struct[0];
+
+#pragma GCC diagnostic pop
 }
 
 /*****************************************************************************/
@@ -485,7 +495,7 @@ MaxPacketSize : detail::field<2> {
 
 struct __attribute__((__packed__))
 Empty {
-	using type = char[0];
+	using type = detail::empty_type;
 	static constexpr unsigned count = 0;
 };
 
