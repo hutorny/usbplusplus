@@ -27,8 +27,8 @@
 
 #include <cstdio>
 #include <clocale>
-#include "include/usbplusplus/usbplusplus.hpp"
-#include "include/usbplusplus/uac1.hpp"
+#include <usbplusplus/usbplusplus.hpp>
+#include <usbplusplus/uac1.hpp>
 
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers" // some field initializers are skipped by intent
 

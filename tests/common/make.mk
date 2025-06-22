@@ -7,7 +7,7 @@
 
 INCLUDES = include tests/common 
 BUILDDIR = build
-CXXFLAGS += $(STD:%=-std=%) $(INCLUDES:%=-I$(PROJROOT)/%) $(WARNINGS) $(if $(findstring gcc, $(CXX)), $(GCCWARN))
+CXXFLAGS += $(STD:%=-std=%) $(INCLUDES:%=-I$(PROJROOT)%) $(WARNINGS) $(if $(findstring gcc, $(CXX)), $(GCCWARN))
 WARNINGS = -pedantic -Wall -Wextra -Wconversion -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization \
            -Wmissing-declarations -Wmissing-include-dirs  -Wold-style-cast -Woverloaded-virtual -Wredundant-decls \
            -Wshadow -Wsign-conversion -Wsign-promo -Wswitch-default -Wundef -Weffc++ -Wfloat-equal \

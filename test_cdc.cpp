@@ -24,14 +24,12 @@
  *
  * https://opensource.org/licenses/MIT
  */
-
+#pragma GCC diagnostic ignored "-Wpedantic" // zero-size array member ‘ZeroBandwidth::endpoints’ not at end of CdcConfiguration
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers" // some field initializers are skipped by intent
 
 #include <cstdio>
-#include <clocale>
-#include "include/usbplusplus/usbplusplus.hpp"
-#include "include/usbplusplus/cdc.hpp"
-
-#pragma GCC diagnostic ignored "-Wmissing-field-initializers" // some field initializers are skipped by intent
+#include <usbplusplus/usbplusplus.hpp>
+#include <usbplusplus/cdc.hpp>
 
 /****************************************************************************/
 
