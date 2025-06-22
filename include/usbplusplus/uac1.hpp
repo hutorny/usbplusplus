@@ -363,7 +363,7 @@ AudioControl {
 		return AudioInterfaceSubclassCode_t::AUDIOCONTROL;
 	}
 	static constexpr uint8_t length() {
-		return sizeof(AudioControl<NInterfaces, None>) - sizeof(Header);
+		return sizeof(AudioControl<NInterfaces, List<None>>) - sizeof(List<None>) - sizeof(Header);
 	}
 	const uint8_t* ptr() const { return bLength.ptr(); }
 
@@ -530,7 +530,7 @@ AudioStreaming {
 		return AudioInterfaceSubclassCode_t::AUDIOSTREAMING;
 	}
 	static constexpr uint8_t length() {
-		return sizeof(AudioStreaming<Empty, Empty>) - sizeof(Header);
+		return sizeof(AudioStreaming<List<None>, Empty>) - sizeof(List<None>) - sizeof(Header);
 	}
 	const uint8_t* ptr() const { return bLength.ptr(); }
 

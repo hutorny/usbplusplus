@@ -338,7 +338,7 @@ CdcControl {
 		return FixedNumber<self>(NotificationEndpoints::count);
 	}
 	static constexpr uint8_t length() {
-		return sizeof(CdcControl<None, None>) - sizeof(CdcHeaderFunctionalDescriptor);
+		return sizeof(CdcControl<List<None>, None>) - sizeof(List<None>) - sizeof(CdcHeaderFunctionalDescriptor);
 	}
 	const uint8_t* ptr() const { return bLength.ptr(); }
 
