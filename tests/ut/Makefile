@@ -9,11 +9,11 @@ include ../common/make.mk
 
 STD = c++20
 BDIR = $(BUILDDIR:%=%/$(STD))
-PROJROOT := $(abspath $(dir $(abspath $(firstword $(MAKEFILE_LIST))))/../../)
+PROJROOT := $(abspath $(dir $(abspath $(firstword $(MAKEFILE_LIST))))/../../)/
 SRCS := $(shell ls -1 *.cpp)
 OBJS := $(SRCS:%.cpp=$(BDIR)/%.o)
 EXE  = $(BDIR:%=%/)ut
-BOOST_UT = $(PROJROOT)/tests/common/boost/ut.hpp
+BOOST_UT = $(PROJROOT)tests/common/boost/ut.hpp
 BOOST_URL = https://raw.githubusercontent.com/boost-ext/ut/refs/heads/master/include/boost/ut.hpp
 
 all: build run

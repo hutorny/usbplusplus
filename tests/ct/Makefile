@@ -9,7 +9,7 @@ include ../common/make.mk
 
 STD = c++14
 BDIR = $(BUILDDIR:%=%/$(STD))
-PROJROOT := $(abspath $(dir $(abspath $(firstword $(MAKEFILE_LIST))))/../../)
+PROJROOT := $(abspath $(dir $(abspath $(firstword $(MAKEFILE_LIST))))/../../)/
 SRCS := $(shell ls -1 *.cpp)
 OBJS := $(SRCS:%.cpp=$(BDIR)/%.o) 
 

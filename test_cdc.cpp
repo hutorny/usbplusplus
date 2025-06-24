@@ -24,12 +24,12 @@
  *
  * https://opensource.org/licenses/MIT
  */
-
+#pragma GCC diagnostic ignored "-Wpedantic" // zero-size array member ‘ZeroBandwidth::endpoints’ not at end of CdcConfiguration
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers" // some field initializers are skipped by intent
 
 #include <cstdio>
-#include <clocale>
-#include "include/usbplusplus/usbplusplus.hpp"
-#include "include/usbplusplus/cdc.hpp"
+#include <usbplusplus/usbplusplus.hpp>
+#include <usbplusplus/cdc.hpp>
 
 /****************************************************************************/
 
@@ -54,17 +54,17 @@ constexpr const Device deviceDescriptor = {
 	.bLength = {},
 	.bDescriptorType = {},
 	.bcdUsb = 2.00_bcd,
-	DeviceClass::Defined_in_the_Interface_Descriptors,
+	.bDeviceClass = DeviceClass::Defined_in_the_Interface_Descriptors,
 	.bDeviceSubClass = 0,
-	DeviceProtocol(0),
-	MaxPacketSize0_t::_64,
+	.bDeviceProtocol = DeviceProtocol(0),
+	.bMaxPacketSize0 = MaxPacketSize0_t::_64,
 	.idVendor = 0x0102,
-	IDProduct(0x0304),
+	.idProduct = IDProduct(0x0304),
 	.bcdDevice = 1.00_bcd,
-	Manufacturer(MyStrings::indexof(sManufacturer)),
-	Product(MyStrings::indexof(sProduct)),
-	SerialNumber(MyStrings::indexof(sSerialNumber)),
-	NumConfigurations(2)
+	.iManufacturer = Manufacturer(MyStrings::indexof(sManufacturer)),
+	.iProduct = Product(MyStrings::indexof(sProduct)),
+	.iSerialNumber = SerialNumber(MyStrings::indexof(sSerialNumber)),
+	.bNumConfigurations = NumConfigurations(2)
 };
 
 using CdcInterface = Interface<Array<Endpoint,2>>;
@@ -72,23 +72,23 @@ using CdcConfiguration =
     Configuration<List<usb2::InterfaceAssociation, CdcEcmControl, ZeroBandwidth, CdcInterface>>;
 
 constexpr const CdcConfiguration configuration = {
-	.bLength = {},
-	.bDescriptorType = {},
-	.wTotalLength = {},
-	.bNumInterfaces = 2,
+	{},
+	{},
+	{},
+	NumInterfaces(2),
 	ConfigurationValue(1),
 	Index(0),
 	CdcConfiguration::Attributes(ConfigurationCharacteristics_t::Remote_Wakeup),
 	MaxPower(100_mA),
 	{
-        (usb2::InterfaceAssociation) {
+        usb2::InterfaceAssociation {
             .bFirstInterface = 0,
             .bInterfaceCount = 2,
             .bFunctionClass = usb2::FunctionClass::CDC,
-            .bFunctionSubClass = (uint8_t)CdcInterfaceSubclassCode_t::EthernetNetworkingControlModel,
-            .bFunctionProtocol = (uint8_t)CdcInterfaceProtocol_t::None,
+            .bFunctionSubClass = static_cast<uint8_t>(CdcInterfaceSubclassCode_t::EthernetNetworkingControlModel),
+            .bFunctionProtocol = static_cast<uint8_t>(CdcInterfaceProtocol_t::None),
         },
-        (CdcEcmControl) {
+        CdcEcmControl {
             .bInterfaceNumber = 0,
             .bAlternateSetting = 0,
             .bInterfaceSubClass = CdcInterfaceSubclassCode_t::EthernetNetworkingControlModel,
@@ -105,7 +105,7 @@ constexpr const CdcConfiguration configuration = {
                 },
                 {
                     .iMACAddress = MyStrings::indexof(sMacAddress),
-                    .bmEthernetStatistics = (EthernetStatistics_t)0,
+                    .bmEthernetStatistics = EthernetStatistics_t(0),
                     .wMaxSegmentSize = 1514,
                     .wNumberMCFilters = 0,
                     .bNumberPowerFilters = 0,
@@ -113,7 +113,7 @@ constexpr const CdcConfiguration configuration = {
             },
             .endpoints =
                 {
-                    (Endpoint){
+                    Endpoint{
                         .bEndpointAddress = EndpointAddress(1, EndpointDirection_t::IN),
                         .bmAttributes = Endpoint::Attributes(TransferType_t::Interrupt),
                         .wMaxPacketSize = 16,
@@ -121,18 +121,18 @@ constexpr const CdcConfiguration configuration = {
                     },
                 },
         },
-        (ZeroBandwidth) { 
+        ZeroBandwidth {
             .bInterfaceNumber = 1,
             .bAlternateSetting = 0,
-            .bInterfaceSubClass = (uint8_t)CdcInterfaceSubclassCode_t::Reseved,
-            .bInterfaceProtocol = (uint8_t)CdcInterfaceProtocol_t::None,
+            .bInterfaceSubClass = static_cast<uint8_t>(CdcInterfaceSubclassCode_t::Reseved),
+            .bInterfaceProtocol = static_cast<uint8_t>(CdcInterfaceProtocol_t::None),
         },
-        (CdcInterface) {
+        CdcInterface {
             .bInterfaceNumber = 1,
             .bAlternateSetting = 1,
             .bInterfaceClass = ClassCode_t::CDC_Data,
-            .bInterfaceSubClass = (uint8_t)CdcInterfaceSubclassCode_t::Reseved,
-            .bInterfaceProtocol = (uint8_t)CdcInterfaceProtocol_t::None,
+            .bInterfaceSubClass = static_cast<uint8_t>(CdcInterfaceSubclassCode_t::Reseved),
+            .bInterfaceProtocol = static_cast<uint8_t>(CdcInterfaceProtocol_t::None),
             .endpoints =
                 {
                     {
@@ -155,15 +155,15 @@ constexpr const CdcConfiguration configuration = {
 static void dump(const char* prefix, const uint8_t* data) {
 	printf("%s", prefix);
 	unsigned len = (data[0] >= 4) &&
-			(data[1] == (uint8_t) DescriptorType_t::CONFIGURATION ||
-			 data[1] == (uint8_t) DescriptorType_t::OTHER_SPEED ) ?
+			(data[1] == static_cast<uint8_t>(DescriptorType_t::CONFIGURATION) ||
+			 data[1] == static_cast<uint8_t>(DescriptorType_t::OTHER_SPEED) ) ?
 			* reinterpret_cast<const uint16_t*>(data+2) : data[0];
 	for(uint8_t i = 0; i < len; ++i )
 		printf("%c 0x%2.2X", (i?',':'{'), data[i]);
 	printf(" }\n");
 }
 
-int main(int argc, char *argv[]) {
+int main(int, char *[]) {
 	dump("device:         ", deviceDescriptor.ptr());
 	dump("configuration : ", configuration.ptr());
 	return 0;

@@ -25,10 +25,12 @@
  * https://opensource.org/licenses/MIT
  */
 
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers" // some field initializers are skipped by intent
+#pragma GCC diagnostic ignored "-Wpedantic" // zero-size array member ‘endpoints’ not at end of AudioControl
+
 #include <cstdio>
-#include <clocale>
-#include "include/usbplusplus/usbplusplus.hpp"
-#include "include/usbplusplus/uac2.hpp"
+#include <usbplusplus/usbplusplus.hpp>
+#include <usbplusplus/uac2.hpp>
 
 /****************************************************************************/
 
@@ -83,7 +85,7 @@ constexpr const usb2::InterfaceAssociation audio_iad = {
     .bInterfaceCount = 3,
     .bFunctionClass = usb2::FunctionClass::Audio,
     .bFunctionSubClass = 0,
-    .bFunctionProtocol = (uint8_t)(FunctionProtocol_t::AF_VERSION_02_00),
+    .bFunctionProtocol = static_cast<uint8_t>(FunctionProtocol_t::AF_VERSION_02_00),
 };
 
 constexpr const AudioControlInterface audio_control_interface = {
@@ -188,12 +190,12 @@ constexpr const HeadsetConfiguration configuration = {
     },
 };
 
-void dump(const char *prefix, const uint8_t *data)
+static void dump(const char *prefix, const uint8_t *data)
 {
     printf("%s", prefix);
     unsigned len = (data[0] >= 4) &&
-                           (data[1] == (uint8_t)DescriptorType_t::CONFIGURATION ||
-                            data[1] == (uint8_t)DescriptorType_t::OTHER_SPEED)
+                           (data[1] == static_cast<uint8_t>(DescriptorType_t::CONFIGURATION) ||
+                            data[1] == static_cast<uint8_t>(DescriptorType_t::OTHER_SPEED))
                        ? *reinterpret_cast<const uint16_t *>(data + 2)
                        : data[0];
     for (uint8_t i = 0; i < len; ++i)
@@ -201,10 +203,8 @@ void dump(const char *prefix, const uint8_t *data)
     printf(" }\n");
 }
 
-int main(int argc, char *argv[])
+int main(int, char *[])
 {
-    setlocale(LC_ALL, "");
-
     dump("device:         ", deviceDescriptor.ptr());
     dump("configuration:  ", configuration.ptr());
     return 0;

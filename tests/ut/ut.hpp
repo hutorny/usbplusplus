@@ -7,7 +7,11 @@
  */
 
 #pragma once
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 #include "boost/ut.hpp"
+#pragma GCC diagnostic pop
 
 #include <array>
 #include <cstdint>
@@ -41,7 +45,8 @@ bool eq(const Descriptor& descriptor, const ExpectedData& data,
     if( !(boost::ut::expect(boost::ut::eq(length_of(descriptor), data.size()))
                             << "(length) ") )
         return false;
-    for(auto ptr = descriptor.ptr(), i = 0U; i < data.size(); i++) {
+    auto ptr = descriptor.ptr();
+    for(unsigned i = 0U; i < data.size(); i++) {
         if(!(boost::ut::expect(boost::ut::eq(static_cast<unsigned>(data[i]), static_cast<unsigned>(ptr[i])), sl)
                                << "( @" << i << ") "))
             return false;

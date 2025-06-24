@@ -25,10 +25,12 @@
  * https://opensource.org/licenses/MIT
  */
 
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers" // some field initializers are skipped by intent
+#pragma GCC diagnostic ignored "-Wpedantic" // zero-size array member ‘endpoints’ not at end of AudioControl
+
 #include <cstdio>
-#include <clocale>
-#include "include/usbplusplus/usbplusplus.hpp"
-#include "include/usbplusplus/uac1.hpp"
+#include <usbplusplus/usbplusplus.hpp>
+#include <usbplusplus/uac1.hpp>
 
 /****************************************************************************/
 
@@ -214,10 +216,8 @@ static void dump(const char *prefix, const uint8_t *data, size_t len)
     printf(" }\n");
 }
 
-int main(int argc, char *argv[])
+int main(int, char *[])
 {
-    setlocale(LC_ALL, "");
-
     //dump("device:         ", deviceDescriptor.ptr());
     dump("configuration:  ", configuration.ptr(), sizeof(configuration));
     return 0;

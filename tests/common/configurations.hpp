@@ -16,13 +16,24 @@ namespace usbplusplus {
 namespace usb2 {
 namespace tests {
 
-using Interface1 = Interface<Empty>;
+using Interface1 = Interface<List<Endpoint>>;
 using Configuration1 = Configuration<Array<Interface1,2>>;
 
 using Interface2 = Interface<Array<Endpoint,2>>;
 using Configuration2 = Configuration<Array<Interface2,2>>;
 
 using Configuration3 = Configuration<List<Interface1, Interface2, Interface2>>;
+
+constexpr Endpoint TestEndpoint(uint8_t addr, EndpointDirection_t dir, uint16_t maxPacketSize) {
+    return {
+        Length<Endpoint>(),
+        {},
+        EndpointAddress(addr, dir),
+        Endpoint::Attributes(TransferType_t::Isochronous),
+        MaxPacketSize(maxPacketSize),
+        Interval(1)
+    };
+}
 
 constexpr const Configuration1 TestUAC2Configuration_1 = {
     {},
@@ -43,7 +54,8 @@ constexpr const Configuration1 TestUAC2Configuration_1 = {
             InterfaceClass::Audio,
             InterfaceSubClass(0),
             InterfaceProtocol(0),
-            Index(0)
+            Index(0),
+            { TestEndpoint(0, EndpointDirection_t::IN, 256) }
         },
         {
             {},
@@ -54,21 +66,11 @@ constexpr const Configuration1 TestUAC2Configuration_1 = {
             InterfaceClass::Audio,
             InterfaceSubClass(0),
             InterfaceProtocol(0),
-            Index(0)
+            Index(0),
+            { TestEndpoint(1, EndpointDirection_t::OUT, 256) }
         }
     }
 };
-
-constexpr Endpoint TestEndpoint(uint8_t addr, EndpointDirection_t dir, uint16_t maxPacketSize) {
-    return {
-        Length<Endpoint>(),
-        {},
-        EndpointAddress(addr, dir),
-        Endpoint::Attributes(TransferType_t::Isochronous),
-        MaxPacketSize(maxPacketSize),
-        Interval(1)
-    };
-}
 
 static constexpr InterfaceProtocol AudioInterfaceProtocol_02_00 {
     static_cast<uint8_t>(uac2::AudioInterfaceProtocolCode_t::IP_VERSION_02_00)};
@@ -116,6 +118,9 @@ constexpr const Configuration2 TestUAC2Configuration_2 = {
     }
 };
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic" // empty Interface1 causes pedantic warning
+
 constexpr const Configuration3 TestUAC2Configuration_3 = {
     {},
     {},
@@ -135,7 +140,8 @@ constexpr const Configuration3 TestUAC2Configuration_3 = {
             InterfaceClass::Audio,
             InterfaceSubClass(0),
             InterfaceProtocol(0),
-            Index(0)
+            Index(0),
+            {  TestEndpoint(0, EndpointDirection_t::IN, 256) }
         },
         {
             {},
@@ -165,6 +171,7 @@ constexpr const Configuration3 TestUAC2Configuration_3 = {
         }
     }
 };
+#pragma GCC diagnostic pop
 
 } // namespace tests
 } // namespace usb2

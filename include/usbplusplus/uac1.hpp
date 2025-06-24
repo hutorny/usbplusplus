@@ -209,8 +209,8 @@ enum class FormatTypeCode_t : uint8_t {
 /*****************************************************************************/
 } // namespace uac1
 
-template<> constexpr bool enable_or<uac1::SpatialLocations_t> = true;
-template<> constexpr bool enable_or<uac1::FeatureUnitControls_t> = true;
+template<> inline constexpr bool enable_or<uac1::SpatialLocations_t> = true;
+template<> inline constexpr bool enable_or<uac1::FeatureUnitControls_t> = true;
 
 namespace uac1 {
 /*****************************************************************************/
@@ -302,13 +302,13 @@ using LockDelayUnits = detail::typed<LockDelayUnits_t>;
 struct __attribute__((__packed__))
 UnitID : detail::field<1> {
 	using typename field<1>::type;
-	constexpr UnitID(type value) : detail::field<1>(value) {}
+	constexpr UnitID(type val) : detail::field<1>(val) {}
 };
 
 struct __attribute__((__packed__))
 Delay : detail::field<1> {
 	using typename field<1>::type;
-	constexpr Delay(type value) : detail::field<1>(value) {}
+	constexpr Delay(type val) : detail::field<1>(val) {}
 };
 
 
@@ -363,7 +363,7 @@ AudioControl {
 		return AudioInterfaceSubclassCode_t::AUDIOCONTROL;
 	}
 	static constexpr uint8_t length() {
-		return sizeof(AudioControl<NInterfaces, None>) - sizeof(Header);
+		return sizeof(AudioControl<NInterfaces, List<None>>) - sizeof(List<None>) - sizeof(Header);
 	}
 	const uint8_t* ptr() const { return bLength.ptr(); }
 
@@ -530,7 +530,7 @@ AudioStreaming {
 		return AudioInterfaceSubclassCode_t::AUDIOSTREAMING;
 	}
 	static constexpr uint8_t length() {
-		return sizeof(AudioStreaming<Empty, Empty>) - sizeof(Header);
+		return sizeof(AudioStreaming<List<None>, Empty>) - sizeof(List<None>) - sizeof(Header);
 	}
 	const uint8_t* ptr() const { return bLength.ptr(); }
 
@@ -651,12 +651,12 @@ protected:
 	constexpr const uint8_t* ptr() const { return &value[0]; }
 public:
 	constexpr uint32_t get() const { 
-		return (value[0] << 0) | (value[1] << 8) | (value[2] << 16);
+		return static_cast<uint32_t>((value[0] << 0) | (value[1] << 8) | (value[2] << 16));
 	}
 	constexpr SampleFrequency(uint32_t v) : value {
-		(uint8_t)((v & 0x0000ff) >> 0),
-		(uint8_t)((v & 0x00ff00) >> 8),
-		(uint8_t)((v & 0xff0000) >> 16),
+		static_cast<uint8_t>((v & 0x0000ff) >> 0),
+		static_cast<uint8_t>((v & 0x00ff00) >> 8),
+		static_cast<uint8_t>((v & 0xff0000) >> 16),
 	 } {}
 };
 
