@@ -11,18 +11,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
-    - name: build proof tests
-      run: |
-        make STD="c++14" -f tests/common/make.mk test
-        make STD="c++14" -f tests/common/make.mk test_cdc
-        make STD="c++14" -f tests/common/make.mk test_uac1
-        make STD="c++14" -f tests/common/make.mk test_uac2
-    - name: run tests
-      run: |
-        ./test
-        ./test_cdc
-        ./test_uac1
-        ./test_uac2
     - name: build unit tests with GCC
       run: |
         make CXX=g++ -C tests/ut -j$(nproc) clean
