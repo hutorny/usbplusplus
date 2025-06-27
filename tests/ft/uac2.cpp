@@ -31,12 +31,14 @@
 #include <cstdio>
 #include <usbplusplus/usbplusplus.hpp>
 #include <usbplusplus/uac2.hpp>
+#include "ft.hpp"
 
 /****************************************************************************/
 
 using namespace usbplusplus;
 using namespace usbplusplus::usb2;
 using namespace usbplusplus::uac2;
+using namespace usbplusplus::ft;
 
 constexpr ustring sManufacturer = u"MegaCool Corp.";
 constexpr ustring sProduct = u"SuperPuper device";
@@ -190,22 +192,4 @@ constexpr const HeadsetConfiguration configuration = {
     },
 };
 
-static void dump(const char *prefix, const uint8_t *data)
-{
-    printf("%s", prefix);
-    unsigned len = (data[0] >= 4) &&
-                           (data[1] == static_cast<uint8_t>(DescriptorType_t::CONFIGURATION) ||
-                            data[1] == static_cast<uint8_t>(DescriptorType_t::OTHER_SPEED))
-                       ? *reinterpret_cast<const uint16_t *>(data + 2)
-                       : data[0];
-    for (uint8_t i = 0; i < len; ++i)
-        printf("%c 0x%2.2X", (i ? ',' : '{'), data[i]);
-    printf(" }\n");
-}
-
-int main(int, char *[])
-{
-    dump("device:         ", deviceDescriptor.ptr());
-    dump("configuration:  ", configuration.ptr());
-    return 0;
-}
+static usbdevice uac2 { devaddr::uac2, deviceDescriptor, MyStrings{}, configuration };
