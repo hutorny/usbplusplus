@@ -168,6 +168,7 @@ enum class DescriptorType_t : uint8_t {
 	OTHER_SPEED      = 7,
 	INTERFACE_POWER  = 8,
 	OTG              = 9,
+	DEBUG            = 10,
 	/* USB ECN : Interface Association Descriptor
 	 * InterfaceAssociationDescriptor_ecn.pdf								*/
 	INTERFACE_ASSOCIATION = 11,
@@ -242,13 +243,14 @@ namespace detail {
 template<unsigned Size, typename Signed = unsigned>
 class __attribute__((__packed__))
 field {
-protected:
-	using type = typename intN_t<Size,Signed>::type;
-	type value;
-	constexpr const type* ptr() const { return &value; }
 public:
+	using type = typename intN_t<Size,Signed>::type;
 	constexpr type get() const { return byteorder<>::ne(value); }
 	constexpr field(type v) : value(byteorder<>::le(v)) {}
+	constexpr bool operator==(const field& that) const { return value == that.value; }
+protected:
+	type value;
+	constexpr const type* ptr() const { return &value; }
 };
 
 template<typename S>
@@ -324,7 +326,7 @@ using empty_type = empty_struct[0];
 /*****************************************************************************/
 
 struct __attribute__((__packed__))
-RequestType : protected detail::field<1> {
+RequestType : public detail::field<1> {
 	constexpr RequestType(DataTransferDirection_t direction,
 			RequestType_t requesttype, Recipient_t recipient) :
 		field<1>(static_cast<type>(direction | requesttype | recipient)) {
@@ -335,6 +337,7 @@ class __attribute__((__packed__))
 BCD : protected detail::field<2> {
 public:
 	using detail::field<2>::get;
+	using detail::field<2>::operator==;
 private:
 	constexpr BCD(type v) : detail::field<2>(v) {}
 	friend constexpr BCD operator ""_bcd(long double v);
@@ -458,6 +461,7 @@ struct __attribute__((__packed__))
 Number : protected detail::field<N> {
 	using typename detail::field<N>::type;
 	constexpr Number(type v) : detail::field<N>(v) {};
+	using detail::field<N>::get;
 };
 
 struct __attribute__((__packed__))
@@ -699,8 +703,8 @@ struct __attribute__((__packed__))
 SetupPacket {
 	RequestType 				bmRequestType;
 	RequestCode 				bRequest;
-	Value						bValue;
-	Index						wIndex;
+	Value						wValue;
+	detail::field<2>			wIndex;
 	DataLength					wLength;
 };
 /*****************************************************************************/
@@ -1134,5 +1138,48 @@ public:
 	}
 };
 
+//9.4 Standard Device Requests
+struct StandardDeviceRequest : usb1::SetupPacket {
+	// 9.4.3 Get Descriptor
+	DescriptorType_t descriptor_type() const noexcept {
+		// The wValue field specifies the descriptor type in the high byte (refer to Table 9-5)
+		return DescriptorType_t(wValue.get() >> 8);
+	}
+	uint8_t descriptor_index() const noexcept {
+		// and the descriptor index in the low byte.
+		return static_cast<uint8_t>(wValue.get() & 0xFF);
+	}
+	LanguageIdentifier language_id() const noexcept {
+		return static_cast<LanguageIdentifier>(wIndex.get());
+	}
+	InterfaceNumber interface_index() const noexcept {
+		return InterfaceNumber(static_cast<InterfaceNumber::type>(wIndex.get()));
+	}
+	AlternateSetting alternate_setting() const noexcept {
+		return AlternateSetting(static_cast<AlternateSetting::type>(wValue.get()));
+	}
+};
+
+/******************************************************************************/
+/** Figure 9-4. Information Returned by a GetStatus() Request to a Device     */
+enum class DeviceStatus_t : uint16_t {
+	BusPowered		= D(0, 0),
+	SelfPowered		= D(0),
+	RemoteWakeup	= D(1),
+	__mask			= D(0) | D(1)
+};
+template<> inline constexpr bool enable_or<DeviceStatus_t> = true;
+
+/******************************************************************************/
+/** Figure 9-5. Information Returned by a GetStatus() Request to an Interface */
+enum class InterfaceStatus_t : uint16_t {
+	Zero
+};
+
+/******************************************************************************/
+/** Figure 9-6. Information Returned by a GetStatus() Request to an Endpoint  */
+enum class EndpointStatus_t : uint16_t {
+	Halt	= D(0),
+};
 
 }
