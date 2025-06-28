@@ -23,6 +23,7 @@ static void print_devs(libusb_device **devs)
             return;
         }
 
+        desc.iManufacturer
         printf("%04x:%04x (bus %d, device %d)",
             desc.idVendor, desc.idProduct,
             libusb_get_bus_number(dev), libusb_get_device_address(dev));
@@ -37,7 +38,7 @@ static void print_devs(libusb_device **devs)
     }
 }
 
-int main_ft([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
+int main(int argc, char *argv[]) {
     libusb_device **devs;
     int r;
     ssize_t cnt;

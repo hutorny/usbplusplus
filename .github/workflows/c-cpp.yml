@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
+	- name: install dependencies
+	  run: sudo apt-get update && sudo apt-get install -y libudev-dev
     - name: build unit tests with GCC
       run: |
         make CXX=g++ -C tests/ut -j$(nproc) clean
@@ -23,6 +25,19 @@ jobs:
         make CXX=g++ -C tests/ut -j$(nproc) build
     - name: run unit tests
       run: make -C tests/ut run
+    - name: build libusb for functional tests
+      run: |
+        cd ext/libusb
+        ./autogen.sh
+        make install
+    - name: build usbutils for functional tests
+      run: |
+        cd ext/usbutils
+        ./autogen.sh build
+    - name: build functional tests
+      run: make -C tests/ft
+    - name: run functional tests
+      run: make -C tests/ft run
   compile-tests:
     runs-on: ubuntu-24.04
     strategy:
