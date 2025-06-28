@@ -31,7 +31,8 @@ jobs:
       working-directory: ext/libusb
       run: |
         ./autogen.sh
-        make install
+        make -j$(nproc)
+        sudo make install
     - name: build usbutils for functional tests
       working-directory: ext/usbutils
       run: |
