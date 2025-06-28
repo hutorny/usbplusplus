@@ -58,6 +58,7 @@ inline std::string operator+(const std::string& lhs, std::source_location locati
     return str;
 }
 
+// Implements USB "bus"
 class usbsys final {
 public:
 private:
@@ -97,6 +98,8 @@ requires requires(Index::type index, LanguageIdentifier lang, const Configuratio
     (Configurations::length(),...);
     (Configurations::totallength(),...);
 }
+
+// "Attaches" a USB device to the USB bus for the lifetime of usbdevice
 class usbdevice {
 public:
     usbdevice(const usbdevice&) = delete;

@@ -8,14 +8,7 @@
 
 #pragma once
 
-#include <cstdint>
-#include <initializer_list>
-#include <span>
-#include <stdexcept>
-
+#include "addresses.hpp"
 #include "usbsys.hpp"
 
-namespace usbplusplus {
-namespace ft {
-} // namespace ft
-} // namespace usbplusplus
+

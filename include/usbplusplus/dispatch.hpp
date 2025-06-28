@@ -1,6 +1,6 @@
 /* Copyright (C) 2025 Eugene Hutorny <eugene@hutorny.in.ua>
  *
- * dispatcher.hpp - Dispatcher for Standard Device Requests
+ * dispatch.hpp - Dispatcher for Standard Device Requests
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"),
@@ -68,7 +68,8 @@ namespace dispatch {
 using usb1::RequestCode;
 
 // Table 9-3. gives possible combinations of bmRequestType an bRequestType for Standard Device Requests
-// Struct when implements StandardDeviceRequest matching according to Table 9-3.
+// Struct when implements those combinations in StandardDeviceRequest so that only one or two parameters
+// are sufficient to express the intent
 
 template<auto ... Params>
 struct when;
@@ -193,8 +194,9 @@ struct when<DescriptorType>{
     }
 };
 
+// Dispatches request, matching When conditions to Function
 // Function is expected to return false only if the request is not intended for handling in its scope
-// Otherwise It should return true, regardless of the success
+// Otherwise It should return true, regardless of its execution success
 template<auto Function, auto When>
 struct to {
     template<typename Request, typename ... Params>
@@ -206,6 +208,7 @@ struct to {
     }
 };
 
+// Dispatches request to one of the Items
 template <typename ... Item>
 struct dispatcher {
     template<typename Request, typename ... Params>

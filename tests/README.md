@@ -28,7 +28,7 @@ USB++ is tested with the following test categories:
 | Directory  | tests/ft  |
 | ---------- | --------- |
 | Purpose |- Ensure descriptors produce data understood by other software |
-| Methods |- TODO |
+| Methods |- run `lsusb` utility, linked with a substituded `libusb` backend |
 
 ### Common Headers and Code
 

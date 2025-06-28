@@ -1,0 +1,189 @@
+
+Bus 242 Device 033: ID 0103:0001  
+Negotiated speed: High Speed (480Mbps)
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            0 [unknown]
+  bDeviceSubClass         0 [unknown]
+  bDeviceProtocol         0 
+  bMaxPacketSize0        64
+  idVendor           0x0103 
+  idProduct          0x0001 
+  bcdDevice            1.00
+  iManufacturer           1 
+  iProduct                2 
+  iSerial                 3 
+  bNumConfigurations      2
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength       0x0037
+    bNumInterfaces          2
+    bConfigurationValue     2
+    iConfiguration          0 
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower              100mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      0 [unknown]
+      bInterfaceProtocol     32 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0100  1x 256 bytes
+        bInterval               1
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0100  1x 256 bytes
+        bInterval               1
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       1
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      0 [unknown]
+      bInterfaceProtocol     32 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x83  EP 3 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0100  1x 256 bytes
+        bInterval               1
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x04  EP 4 OUT
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0100  1x 256 bytes
+        bInterval               1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength       0x0047
+    bNumInterfaces          3
+    bConfigurationValue     3
+    iConfiguration          0 
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower              100mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      0 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x80  EP 0 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0100  1x 256 bytes
+        bInterval               1
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       1
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      0 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0100  1x 256 bytes
+        bInterval               1
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0100  1x 256 bytes
+        bInterval               1
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        3
+      bAlternateSetting       1
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      0 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x83  EP 3 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0100  1x 256 bytes
+        bInterval               1
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x04  EP 4 OUT
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0100  1x 256 bytes
+        bInterval               1
+Device Qualifier (for other device speed):
+  bLength                10
+  bDescriptorType         6
+  bcdUSB               1.00
+  bDeviceClass            0 [unknown]
+  bDeviceSubClass         0 [unknown]
+  bDeviceProtocol         0 
+  bMaxPacketSize0        16
+  bNumConfigurations      1
+Device Status:     0x0001
+  Self Powered

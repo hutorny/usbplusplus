@@ -241,3 +241,6 @@ Both `Strings` and `MultiStrings` templates implement method
 `get(index, lang)` that returns a pointer to the string descriptor. 
 If index is equal zero, get returns pointer String Descriptor Zero with a 
 list of supported languages.
+
+## Testing
+`USB++` facilitates off-target unint testing and functional testing of descriptors with `libusb` and `lsusb`.

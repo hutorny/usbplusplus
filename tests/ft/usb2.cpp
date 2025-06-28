@@ -1,6 +1,6 @@
-/* Copyright (C) 2018 Eugene Hutorny <eugene@hutorny.in.ua>
+/* Copyright (C) 2018, 2025 Eugene Hutorny <eugene@hutorny.in.ua>
  *
- * test.cpp - USB++ proof of concept tests
+ * tests/ft/usb2.cpp - USB++ functional tests
  *
  * This file is a part of USB++ library
  *
@@ -40,23 +40,38 @@ using namespace usbplusplus::usb2;
 using namespace usbplusplus::usb2::tests;
 using namespace usbplusplus::ft;
 
-constexpr ustring sManufacturer = u"MegaCool Corp.";
-constexpr ustring sProduct      = u"SuperPuper device";
-constexpr ustring sInterface    = u"Interface";
-constexpr ustring sSerialNumber = u"SN-12C55F2";
-constexpr ustring uManufacturer = u"MegaKool Korp.";
-constexpr ustring uProduct      = u"SuperPuper prystriy";
+constexpr ustring sManufacturer = u"Test Manufacturer.";
+constexpr ustring sProduct      = u"Test Product";
+constexpr ustring sInterface    = u"Test Interface";
+constexpr ustring sSerialNumber = u"SN-TEST1";
+constexpr ustring sManufacturer2 = u"Test Manufacturer Two";
+constexpr ustring sProduct2      = u"Test Product Two";
+constexpr ustring sInterface2    = u"Interface2";
+constexpr ustring sSerialNumber2 = u"SN-TEST2";
+constexpr ustring eManufacturer2 = u"Test Manufacturer GB/UK";
+constexpr ustring eProduct2      = u"Test Product GB/UK";
+constexpr ustring eInterface2    = u"Interface3";
+constexpr ustring eSerialNumber2 = u"SN-TEST-UK";
+constexpr ustring uManufacturer = u"Тестовий Виробник";
+constexpr ustring uProduct      = u"Тестовий Продукт";
 using MyStrings = Strings<LanguageIdentifier::English_United_States,
 	sManufacturer,
 	sProduct,
 	sInterface,
 	sSerialNumber>;
 
+using Matrix = MultiStrings<
+    Strings<LanguageIdentifier::English_United_States,
+                                        sManufacturer2, sProduct2, sSerialNumber2, sInterface2>,
+    Strings<LanguageIdentifier::English_United_Kingdom,
+                                        eManufacturer2, eProduct2, eSerialNumber2, eInterface2>,
+    Strings<LanguageIdentifier::Ukrainian,
+                                        uManufacturer, uProduct, sSerialNumber2, sInterface>>;
 
 constexpr const Device deviceDescriptor = {
 	.bLength = {},
 	.bDescriptorType = {},
-	.bcdUsb = 2.00_bcd,
+	.bcdUsb = 1.00_bcd,
 	.bDeviceClass = DeviceClass::Defined_in_the_Interface_Descriptors,
 	.bDeviceSubClass = 0,
 	.bDeviceProtocol = 0,
@@ -68,6 +83,23 @@ constexpr const Device deviceDescriptor = {
 	.iProduct = MyStrings::indexof(sProduct),
 	.iSerialNumber = MyStrings::indexof(sSerialNumber),
 	.bNumConfigurations = 2
+};
+
+constexpr const Device deviceDescriptor_2 = {
+    .bLength = {},
+    .bDescriptorType = {},
+    .bcdUsb = 2.00_bcd,
+    .bDeviceClass = DeviceClass::Defined_in_the_Interface_Descriptors,
+    .bDeviceSubClass = 0,
+    .bDeviceProtocol = 0,
+    .bMaxPacketSize0 = MaxPacketSize0_t::_64,
+    .idVendor = 0x0103,
+    .idProduct = IDProduct(0x0001),
+    .bcdDevice = 1.00_bcd,
+    .iManufacturer = Matrix::indexof(sManufacturer2),
+    .iProduct = Matrix::indexof(sProduct2),
+    .iSerialNumber = Matrix::indexof(sSerialNumber2),
+    .bNumConfigurations = 2
 };
 
 constexpr const  Device_Qualifier deviceQualifier = {
@@ -82,28 +114,7 @@ constexpr const  Device_Qualifier deviceQualifier = {
 	Reserved<1>()
 };
 
-constexpr const Languages<2> Languages2 = {
-	{},
-	{},
-	{
-		LanguageIdentifier::English_United_States,
-		LanguageIdentifier::Ukrainian
-	}
-};
-
-constexpr const auto Languages3 = LanguageList<
-	LanguageIdentifier::English_United_States,
-	LanguageIdentifier::English_United_Kingdom,
-	LanguageIdentifier::Ukrainian
->();
-
-using Matrix = MultiStrings<
-	Strings<LanguageIdentifier::English_United_States,
-										sManufacturer, sProduct, sInterface>,
-	Strings<LanguageIdentifier::English_United_Kingdom,
-										sManufacturer, sProduct, sInterface>,
-	Strings<LanguageIdentifier::Ukrainian,
-										uManufacturer, uProduct, sInterface>>;
-
+// Creates USB 1.0 device (per deviceDescriptor.bcdUsb)
 static usbdevice test1 { devaddr::test1, deviceDescriptor, MyStrings{}, TestUAC2Configuration_1, TestUAC2Configuration_2 };
-static usbdevice test2 { devaddr::test2, deviceDescriptor, deviceQualifier, Matrix{}, TestUAC2Configuration_2, TestUAC2Configuration_3 };
+// Creates USB 2.0 device per deviceDescriptor_2.bcdUsb) with a DeviceQualifier and multilingual strings Matrix.
+static usbdevice test2 { devaddr::test2, deviceDescriptor_2, deviceQualifier, Matrix{}, TestUAC2Configuration_2, TestUAC2Configuration_3 };

@@ -44,8 +44,6 @@ constexpr ustring sManufacturer = u"MegaCool Corp.";
 constexpr ustring sProduct = u"SuperPuper device";
 constexpr ustring sInterface = u"Interface";
 constexpr ustring sSerialNumber = u"SN-12C55F2";
-constexpr ustring uManufacturer = u"MegaKool Korp.";
-constexpr ustring uProduct = u"SuperPuper prystriy";
 using MyStrings = Strings<LanguageIdentifier::English_United_States,
                           sManufacturer,
                           sProduct,

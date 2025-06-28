@@ -695,6 +695,7 @@ using SerialNumber 		= Index;
 using RequestCode		= RequestCode_t;
 using Value				= detail::field<2>;
 using DataLength		= detail::field<2>;
+using WIndex			= detail::field<2>;
 
 /*****************************************************************************/
 /*  Table 9-2. Format of Setup Data											 */
@@ -704,7 +705,7 @@ SetupPacket {
 	RequestType 				bmRequestType;
 	RequestCode 				bRequest;
 	Value						wValue;
-	detail::field<2>			wIndex;
+	WIndex						wIndex;
 	DataLength					wLength;
 };
 /*****************************************************************************/

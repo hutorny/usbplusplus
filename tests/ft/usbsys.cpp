@@ -22,10 +22,8 @@
 #include <vector>
 #include <map>
 #include <tuple>
-#include <iostream> // XXX
 #include <thread>
 
-#pragma GCC diagnostic ignored "-Wunused-parameter" // XXX
 #pragma GCC diagnostic ignored "-Wold-style-cast" // casts from libusb macros
 
 namespace usbplusplus {
@@ -223,22 +221,28 @@ static auto get_configuration_descriptor(ControlPacket packet, device_item& dev,
 }
 
 static auto get_string(ControlPacket packet, device_item& dev, response resp) {
-    resp.send(packet.wLength.get(), dev.strings(packet.descriptor_index(), packet.language_id()));
+    auto str = dev.strings(packet.descriptor_index(), packet.language_id());
+    if (str == nullptr) return true;
+    auto len = packet.wLength.get();
+    if (packet.wLength.get() == 0) {
+        len = str[0];
+    }
+    resp.send(len, str);
     return true;
 }
 
-static auto get_interface_descriptor(ControlPacket packet, device_item& dev, response resp) {
-    std::clog << __func__ <<  '\n';
+static auto get_interface_descriptor(ControlPacket, device_item&, response) {
+    // not used in functional tests
     return true;
 }
 
-static auto get_config(ControlPacket packet, device_item& dev, response resp) {
+static auto get_config(ControlPacket, device_item& dev, response resp) {
     if (dev.active_config_index <= dev.configurations_descriptors.size())
         resp.send(dev.configurations_descriptors[dev.active_config_index][config_value_offset]);
     return true;
 }
 
-static auto get_status(ControlPacket packet, device_item& dev, response resp) {
+static auto get_status(ControlPacket, device_item&, response resp) {
     resp.send(DeviceStatus_t::SelfPowered);
     return true;
 }
@@ -249,22 +253,23 @@ static auto get_interface(ControlPacket packet, device_item& dev, response resp)
     return true;
 }
 
-static auto set_interface(ControlPacket packet, device_item& dev, response resp) {
+static auto set_interface(ControlPacket packet, device_item& dev, response) {
     dev.alternate_settings[packet.interface_index().get()] = packet.alternate_setting();
     return true;
 }
 
-static auto get_interface_association(ControlPacket packet, device_item& dev, response resp) {
-    std::cerr << "!!! " <<  __func__ <<  " not implemented\n";
+static auto get_interface_association(ControlPacket, device_item&, response) {
+    // not used in functional tests
     return true;
 }
 
-static auto get_debug_descriptor(ControlPacket packet, device_item& dev, response resp) {
+static auto get_debug_descriptor(ControlPacket packet, device_item&, response resp) {
     static constexpr std::array<uint8_t, 4> debug { 0, 0, 0, 0 };
     resp.send(packet.wLength.get(), debug);
     return true;
 }
 
+// Dispatches standard requests to the functions above
 using request_dispatcher = dispatch::dispatcher<
     dispatch::to<get_device_descriptor, dispatch::when<DescriptorType_t::DEVICE>{}>,
     dispatch::to<get_device_qualifier, dispatch::when<DescriptorType_t::DEVICE_QUALIFIER>{}>,
@@ -310,10 +315,6 @@ static int submit_transfer(usbi_transfer *itransfer) {
     return error;
 }
 
-static int cancel_transfer(usbi_transfer *itransfer) {
-    return LIBUSB_SUCCESS;
-}
-
 static int open_device(libusb_device_handle* ludh){
     return device_list().contains(devaddr(ludh->dev->device_address)) ? LIBUSB_SUCCESS : LIBUSB_ERROR_NO_DEVICE;
 }
@@ -325,8 +326,7 @@ static int open_device(libusb_device_handle* ludh){
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 
 using namespace usbplusplus::ft;
-
-
+// Substitutes libusb backend when libusb is linked statically
 const struct usbi_os_backend usbi_backend = {
     .name = "USB++ Functional Tests Backend",
     .caps = 0,
@@ -343,5 +343,5 @@ const struct usbi_os_backend usbi_backend = {
     .set_interface_altsetting = [](libusb_device_handle*, uint8_t,  uint8_t)->int { return LIBUSB_ERROR_NOT_SUPPORTED; },
     .clear_halt = [](libusb_device_handle*, unsigned char)->int { return LIBUSB_ERROR_NOT_SUPPORTED; },
     .submit_transfer = submit_transfer,
-    .cancel_transfer = cancel_transfer,
+    .cancel_transfer = [](usbi_transfer*)->int { return LIBUSB_SUCCESS; },
 };
