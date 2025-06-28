@@ -26,14 +26,9 @@ jobs:
     - name: run unit tests
       run: make -C tests/ut run
     - name: build libusb for functional tests
-      run: |
-        cd ext/libusb
-        ./autogen.sh
-        make install
+      run: cd ext/libusb && ./autogen.sh && make install
     - name: build usbutils for functional tests
-      run: |
-        cd ext/usbutils
-        ./autogen.sh build
+      run: cd ext/usbutils && ./autogen.sh build
     - name: build functional tests
       run: make -C tests/ft
     - name: run functional tests
