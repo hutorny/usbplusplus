@@ -1,0 +1,6 @@
+[submodule "ext/libusb"]
+	path = ext/libusb
+	url = https://github.com/libusb/libusb.git
+[submodule "ext/usbutils"]
+	path = ext/usbutils
+	url = https://github.com/gregkh/usbutils.git
