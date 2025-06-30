@@ -1,0 +1,1 @@
+./build/ftls --lang=uk --format=X --dump 242:33:S:2

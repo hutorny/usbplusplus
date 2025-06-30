@@ -1,0 +1,5 @@
+240:1 ID [0102:0304] Port: 1 Manufacturer: 'MegaCool Corp.' Product: 'SuperPuper device' Serial Number: 'SN-12C55F2'
+240:2 ID [0102:0304] Port: 2 Manufacturer: 'MegaCool Corp.' Product: 'SuperPuper device' Serial Number: 'SN-12C55F2'
+240:3 ID [0102:0304] Port: 3 Manufacturer: 'MegaCool Corp.' Product: 'SuperPuper device' Serial Number: 'SN-12C55F2'
+242:32 ID [0102:0304] Manufacturer: 'Test Manufacturer.' Product: 'Test Product' Serial Number: 'SN-TEST1'
+242:33 ID [0103:0001] Port: 1 Manufacturer: 'Test Manufacturer GB/UK' Product: 'Test Product GB/UK' Serial Number: 'SN-TEST-UK'
