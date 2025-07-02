@@ -11,18 +11,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
-    - name: build proof tests
-      run: |
-        make STD="c++14" -f tests/common/make.mk test
-        make STD="c++14" -f tests/common/make.mk test_cdc
-        make STD="c++14" -f tests/common/make.mk test_uac1
-        make STD="c++14" -f tests/common/make.mk test_uac2
-    - name: run tests
-      run: |
-        ./test
-        ./test_cdc
-        ./test_uac1
-        ./test_uac2
+      with:
+        submodules: true
+    - name: install dependencies
+      run: sudo apt-get update && sudo apt-get install -y libudev-dev meson
     - name: build unit tests with GCC
       run: |
         make CXX=g++ -C tests/ut -j$(nproc) clean
@@ -35,6 +27,20 @@ jobs:
         make CXX=g++ -C tests/ut -j$(nproc) build
     - name: run unit tests
       run: make -C tests/ut run
+    - name: build libusb for functional tests
+      working-directory: ext/libusb
+      run: |
+        ./autogen.sh
+        make -j$(nproc)
+        sudo make install
+    - name: build usbutils for functional tests
+      working-directory: ext/usbutils
+      run: |
+        ./autogen.sh build
+    - name: build functional tests
+      run: make -C tests/ft -j$(nproc)
+    - name: run functional tests
+      run: make -C tests/ft run
   compile-tests:
     runs-on: ubuntu-24.04
     strategy:

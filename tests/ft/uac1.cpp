@@ -1,6 +1,6 @@
 /* Copyright (C) 2025 Michiel van Leeuwen <michiel@embeddedacoustics.com>
  *
- * test_uac2.cpp - USB++ proof of concept tests for UAC2
+ * test_uac1.cpp - USB++ proof of concept tests for UAC1
  *
  * This file is a part of USB++ library
  *
@@ -30,20 +30,20 @@
 
 #include <cstdio>
 #include <usbplusplus/usbplusplus.hpp>
-#include <usbplusplus/uac2.hpp>
+#include <usbplusplus/uac1.hpp>
+#include "ft.hpp"
 
 /****************************************************************************/
 
 using namespace usbplusplus;
 using namespace usbplusplus::usb2;
-using namespace usbplusplus::uac2;
+using namespace usbplusplus::uac1;
+using namespace usbplusplus::ft;
 
 constexpr ustring sManufacturer = u"MegaCool Corp.";
 constexpr ustring sProduct = u"SuperPuper device";
 constexpr ustring sInterface = u"Interface";
 constexpr ustring sSerialNumber = u"SN-12C55F2";
-constexpr ustring uManufacturer = u"MegaKool Korp.";
-constexpr ustring uProduct = u"SuperPuper prystriy";
 using MyStrings = Strings<LanguageIdentifier::English_United_States,
                           sManufacturer,
                           sProduct,
@@ -65,68 +65,49 @@ constexpr const Device deviceDescriptor = {
     .bNumConfigurations = 1,
 };
 
-using AudioControlInterface = AudioControl<
+using AudioControlInterface = AudioControl<1,
     List<
-        Clock_Source,
         Input_Terminal,
-        Feature_Unit<2>,
-        Output_Terminal>,
-    None>;
-using SpeakerStreamingInterface = AudioStreaming<List<Type_I_Format_Type>, List<AS_Isochronous_Audio_Data_Endpoint>>;
-using HeadsetConfiguration = Configuration<
+        Feature_Unit<3>,
+        Output_Terminal
+    >
+>;
+
+using SpeakerStreamingInterface = AudioStreaming<List<Type_I_Format_Type<Type_I_DiscreteSampleFrequency<2>>>, List<AS_Isochronous_Audio_Data_Endpoint, Endpoint>>;
+using MicrophoneStreamingInterface = AudioStreaming<List<Type_I_Format_Type<Type_I_DiscreteSampleFrequency<2>>>, List<AS_Isochronous_Audio_Data_Endpoint>>;
+
+using Uac1Configuration = Configuration<
     List<
-        usb2::InterfaceAssociation,
         AudioControlInterface,
         ZeroBandwidth,
-        SpeakerStreamingInterface>>;
-
-constexpr const usb2::InterfaceAssociation audio_iad = {
-    .bFirstInterface = 2,
-    .bInterfaceCount = 3,
-    .bFunctionClass = usb2::FunctionClass::Audio,
-    .bFunctionSubClass = 0,
-    .bFunctionProtocol = static_cast<uint8_t>(FunctionProtocol_t::AF_VERSION_02_00),
-};
+        SpeakerStreamingInterface,
+        ZeroBandwidth,
+        MicrophoneStreamingInterface
+    >
+>;
 
 constexpr const AudioControlInterface audio_control_interface = {
     .bInterfaceNumber = 1,
     .bAlternateSetting = 0,
     .header = {
-        .bcdADC = 2.00_bcd,
-        .bCategory = AudioFunctionCategoryCode_t::HEADSET,
-        .bmControls = LatencyControl_t::none,
+        .bcdADC = 1.00_bcd,
+        .baCollection = { 1 },
     },
     .units = {
-        Clock_Source{
-            .bClockID = 1,
-            .bmAttributes = Clock_Source::Attributes(ClockType_t::Internal_fixed_Clock),
-            .bmControls = Clock_Source::Controls({
-                .frequencyControl = 0,
-                .validityControl = 0,
-            }),
-            .bAssocTerminal = 0,
-        },
         Input_Terminal{
             .bTerminalID = 2,
             .wTerminalType = InputTerminalType(InputTerminalType_t::USB_streaming),
             .bAssocTerminal = 0,
-            .bCSourceID = 1,
             .bNrChannels = 2,
-            .bmChannelConfig = ChannelConfig(SpatialLocations_t::FL | SpatialLocations_t::FR),
-            .bmControls = Input_Terminal::Controls(),
+            .wChannelConfig = ChannelConfig(SpatialLocations_t::FL | SpatialLocations_t::FR),
         },
-        Feature_Unit<2>{
+        Feature_Unit<3>{
             .bUnitID = 3,
             .bSourceID = 2,
             .bmaControls = {
-                Feature_Unit<2>::Controls({
-                    .Mute_Control = Control_t::programmable,
-                    .Volume_Control = Control_t::programmable,
-                }),
-                Feature_Unit<2>::Controls({
-                    .Mute_Control = Control_t::programmable,
-                    .Volume_Control = Control_t::programmable,
-                }),
+                FeatureUnitControls_t::MUTE | FeatureUnitControls_t::VOLUME,
+                FeatureUnitControls_t::MUTE | FeatureUnitControls_t::VOLUME,
+                FeatureUnitControls_t::MUTE | FeatureUnitControls_t::VOLUME,
             },
         },
         Output_Terminal{
@@ -134,78 +115,97 @@ constexpr const AudioControlInterface audio_control_interface = {
             .wTerminalType = OutputTerminalType(OutputTerminalType_t::Headphones),
             .bAssocTerminal = 0,
             .bSourceID = 3,
-            .bCSourceID = 1,
-            .bmControls = Output_Terminal::Controls(),
         },
-        // TODO: Input and output terminal for microphone
     },
 };
 
-constexpr const ZeroBandwidth audio_speaker_interface_alt0 = {
-    .bInterfaceNumber = 3,
+constexpr const ZeroBandwidth speaker_interface_alt0 = {
+    .bInterfaceNumber = 1,
 };
 
-constexpr const SpeakerStreamingInterface audio_speaker_interface_alt1 = {
+constexpr const SpeakerStreamingInterface speaker_interface = {
     .bInterfaceNumber = 3,
     .bAlternateSetting = 1,
     .header = {
         .bTerminalLink = 2,
-        .bFormatType = FormatTypeCode_t::FORMAT_TYPE_I,
-        .bmFormats = AudioDataFormatTypeI_t::PCM,
-        .bNrChannels = 2,
-        .bmChannelConfig = ChannelConfig(SpatialLocations_t::FL | SpatialLocations_t::FR),
+        .bDelay = 0,
+        .wFormatTag = FormatTag_t::FORMAT_TYPE_I_PCM,
     },
     .formats = {
         {
-            .bSubslotSize = 2,
+            .bNrChannels = 2,
+            .bSubframeSize = 1,
             .bBitResolution = 16,
+            .samfreq = 
+                { 
+                    .tSamFreq = { 44100, 48000}
+                }
         },
     },
     .endpoints = {
         AS_Isochronous_Audio_Data_Endpoint{
-            .endpoint = {
-                .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::IN),
-                .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous),
-                .wMaxPacketSize = 32,
-                .bInterval = 1,
-            },
-            .bmAttributes = AS_Isochronous_Audio_Data_Endpoint::Attributes(false),
-            .bLockDelayUnits = LockDelayUnits(LockDelayUnits_t::Milliseconds),
-            .wLockDelay = 1,
+            .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::OUT),
+            .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::Asynchronous),
+            .wMaxPacketSize = 196,
+            .bInterval = 1,
+            .bSynchAddress = EndpointAddress(0x01, EndpointDirection_t::IN),
+        },
+        Endpoint{
+            .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::IN),
+            .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::No_Synchronization, UsageType_t::Feedback_endpoint),
+            .wMaxPacketSize = 3,
+            .bInterval = 8,
         },
     },
 };
 
-constexpr const HeadsetConfiguration configuration = {
+constexpr const ZeroBandwidth microphone_interface_alt0 = {
+    .bInterfaceNumber = 1,
+};
+
+constexpr const MicrophoneStreamingInterface microphone_interface = {
+    .bInterfaceNumber = 3,
+    .bAlternateSetting = 1,
+    .header = {
+        .bTerminalLink = 2,
+        .bDelay = 0,
+        .wFormatTag = FormatTag_t::FORMAT_TYPE_I_PCM,
+    },
+    .formats = {
+        {
+            .bNrChannels = 1,
+            .bSubframeSize = 1,
+            .bBitResolution = 16,
+            .samfreq = 
+                { 
+                    .tSamFreq = { 44100, 48000}
+                }
+        },
+    },
+    .endpoints = {
+        AS_Isochronous_Audio_Data_Endpoint{
+            .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::OUT),
+            .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::Synchronous),
+            .wMaxPacketSize = 96,
+            .bInterval = 1,
+            .bSynchAddress = EndpointAddress(0x00, EndpointDirection_t::OUT),
+        },
+    },
+};
+
+constexpr const Uac1Configuration configuration = {
     .bNumInterfaces = 2,
     .bConfigurationValue = 1,
     .iConfiguration = 0,
     .bmAttributes = ConfigurationCharacteristics_t::Reserved,
     .bMaxPower = 100_mA,
     .interfaces = {
-        audio_iad,
         audio_control_interface,
-        audio_speaker_interface_alt0,
-        audio_speaker_interface_alt1,
+        speaker_interface_alt0,
+        speaker_interface,
+        microphone_interface_alt0,
+        microphone_interface,
     },
 };
 
-static void dump(const char *prefix, const uint8_t *data)
-{
-    printf("%s", prefix);
-    unsigned len = (data[0] >= 4) &&
-                           (data[1] == static_cast<uint8_t>(DescriptorType_t::CONFIGURATION) ||
-                            data[1] == static_cast<uint8_t>(DescriptorType_t::OTHER_SPEED))
-                       ? *reinterpret_cast<const uint16_t *>(data + 2)
-                       : data[0];
-    for (uint8_t i = 0; i < len; ++i)
-        printf("%c 0x%2.2X", (i ? ',' : '{'), data[i]);
-    printf(" }\n");
-}
-
-int main(int, char *[])
-{
-    dump("device:         ", deviceDescriptor.ptr());
-    dump("configuration:  ", configuration.ptr());
-    return 0;
-}
+static usbdevice uac1 { devaddr::uac1, deviceDescriptor, MyStrings{}, configuration };

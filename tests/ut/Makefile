@@ -24,6 +24,7 @@ run: $(EXE)
 	 ./$(EXE)
 
 $(EXE): $(OBJS)
+	$(info link $@)
 	@$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(BDIR)/%.o: %.cpp | $(BDIR) $(BOOST_UT)
