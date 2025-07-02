@@ -243,4 +243,4 @@ If index is equal zero, get returns pointer String Descriptor Zero with a
 list of supported languages.
 
 ## Testing
-`USB++` facilitates off-target unint testing and functional testing of descriptors with `libusb` and `lsusb`.
+`USB++` facilitates off-target unit testing and functional testing of descriptors with `libusb` and `lsusb`.
