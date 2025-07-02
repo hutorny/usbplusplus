@@ -34,7 +34,7 @@ namespace usbplusplus {
 namespace cdc {
 
 enum class CdcInterfaceSubclassCode_t : uint8_t {
-	Reseved							= 0x00,
+	Reserved						= 0x00,
 	DirectLineControlModel			= 0x01,
 	AbstractControlModel			= 0x02,
 	TelephoneControlModel			= 0x03,
