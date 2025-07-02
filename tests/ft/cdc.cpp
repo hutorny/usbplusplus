@@ -126,14 +126,14 @@ constexpr const CdcConfiguration configuration = {
         ZeroBandwidth {
             .bInterfaceNumber = 1,
             .bAlternateSetting = 0,
-            .bInterfaceSubClass = static_cast<uint8_t>(CdcInterfaceSubclassCode_t::Reseved),
+            .bInterfaceSubClass = static_cast<uint8_t>(CdcInterfaceSubclassCode_t::Reserved),
             .bInterfaceProtocol = static_cast<uint8_t>(CdcInterfaceProtocol_t::None),
         },
         CdcInterface {
             .bInterfaceNumber = 1,
             .bAlternateSetting = 1,
             .bInterfaceClass = ClassCode_t::CDC_Data,
-            .bInterfaceSubClass = static_cast<uint8_t>(CdcInterfaceSubclassCode_t::Reseved),
+            .bInterfaceSubClass = static_cast<uint8_t>(CdcInterfaceSubclassCode_t::Reserved),
             .bInterfaceProtocol = static_cast<uint8_t>(CdcInterfaceProtocol_t::None),
             .endpoints =
                 {
