@@ -47,6 +47,15 @@ enum class SpatialLocationRaw_t : uint32_t {
 		RD 					= Raw_Data
 };
 
+
+/* Table 4-22: Class-Specific AS Isochronous Audio Data Endpoint Attributes	 */
+enum class CS_ASEndpointAttributes_t : uint8_t {
+	SAMPLING_FREQUENCY		= D(0),
+	PITCH					= D(1),
+	MAX_PACKETS_ONLY		= D(2),
+};
+
+
 /* Table A-1: Audio Function Class Code										 */
 enum class AudioFunctionClassCode_t : uint8_t {
 	AUDIO_FUNCTION	= static_cast<uint8_t>(ClassCode_t::Audio)
@@ -98,6 +107,12 @@ enum class ASInterfaceDescriptorSubtype_t : uint8_t {
 	AS_GENERAL					= 0x01,
 	FORMAT_TYPE					= 0x02,
 	FORMAT_SPECIFIC				= 0x03,
+};
+
+/* Table A-8: Audio Class-Specific Endpoint Descriptor Subtypes			 */
+enum class ACEndpointDescriptorSubtype_t : uint8_t {
+	DESCRIPTOR_UNDEFINED		= 0x00,
+	EP_GENERAL					= 0x01
 };
 
 /* Termt10.pdf, Table 2-1: USB Terminal Types							*/
@@ -210,6 +225,7 @@ enum class FormatTypeCode_t : uint8_t {
 } // namespace uac1
 
 template<> inline constexpr bool enable_or<uac1::SpatialLocations_t> = true;
+template<> inline constexpr bool enable_or<uac1::CS_ASEndpointAttributes_t> = true;
 template<> inline constexpr bool enable_or<uac1::FeatureUnitControls_t> = true;
 
 namespace uac1 {
@@ -552,12 +568,14 @@ AudioStreaming {
 };
 
 /*****************************************************************************/
-/*  Table 4-20: Class-Specific AS Isochronous Audio Data Endpoint Descriptor */
+/*  Table 4-20: Standard AS Isochronous Audio Endpoint Descriptor            */
 /** AS Isochronous Audio Data Endpoint										 */
+/*  Table 4-22: Standard AS Isochronous Synch Endpoint Descriptor            */
+/** AS Isochronous Audio Sync Endpoint										 */
 struct __attribute__((__packed__))
-AS_Isochronous_Audio_Data_Endpoint {
-	using self = AS_Isochronous_Audio_Data_Endpoint;
-	using Refresh = detail::constant<uint8_t, 0>;
+ASEndpoint {
+	using self = ASEndpoint;
+	using Refresh = detail::typed<uint8_t>;
 
 	static constexpr DescriptorType_t descriptortype() {
 		return DescriptorType_t::ENDPOINT;
@@ -574,6 +592,33 @@ AS_Isochronous_Audio_Data_Endpoint {
 	Interval					bInterval;
 	Refresh						bRefresh;
 	EndpointAddress				bSynchAddress;
+};
+
+/*****************************************************************************/
+/*  Table 4-21: Class-Specific AS Isochronous Audio Data Endpoint Descriptor */
+/** AS Isochronous Audio Data Endpoint										 */
+struct __attribute__((__packed__))
+CS_ASEndpoint {
+	using self = CS_ASEndpoint;
+	using ACEndpointDescriptorSubtype = detail::constant<
+		ACEndpointDescriptorSubtype_t,
+		ACEndpointDescriptorSubtype_t::EP_GENERAL>;
+	using Attributes = detail::typed<CS_ASEndpointAttributes_t>;
+
+	static constexpr ACDescriptorType_t descriptortype() {
+		return ACDescriptorType_t::CS_ENDPOINT;
+	}
+	static constexpr uint8_t length() {
+		return sizeof(self) - sizeof(ASEndpoint);
+	}
+
+	ASEndpoint					endpoint;
+	Length<self>				bLength;
+	ACDescriptorType<self>		bDescriptorType;
+	ACEndpointDescriptorSubtype bDescriptorSubtype;
+	Attributes					bmAttributes;
+	LockDelayUnits				bLockDelayUnits;
+	Number<2>					wLockDelay;
 };
 
 /*****************************************************************************/

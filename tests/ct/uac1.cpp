@@ -23,11 +23,11 @@ using AudioControlInterface = AudioControl<1,
 
 using SpeakerStreamingInterface = AudioStreaming<
         List<Type_I_Format_Type<Type_I_DiscreteSampleFrequency<2>>>,
-        List<AS_Isochronous_Audio_Data_Endpoint, Endpoint>>;
+        List<CS_ASEndpoint, Endpoint>>;
 
 using MicrophoneStreamingInterface = AudioStreaming<
         List<Type_I_Format_Type<Type_I_DiscreteSampleFrequency<2>>>,
-        List<AS_Isochronous_Audio_Data_Endpoint>>;
+        List<CS_ASEndpoint>>;
 
 static_assert(AudioControlInterface::length() == 9, "AudioControlInterface::length()");
 static_assert(AudioControlInterface::Header::totallength() == 43, "AudioControlInterface::Header::totallength()");

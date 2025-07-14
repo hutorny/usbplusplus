@@ -73,8 +73,8 @@ using AudioControlInterface = AudioControl<1,
     >
 >;
 
-using SpeakerStreamingInterface = AudioStreaming<List<Type_I_Format_Type<Type_I_DiscreteSampleFrequency<2>>>, List<AS_Isochronous_Audio_Data_Endpoint, Endpoint>>;
-using MicrophoneStreamingInterface = AudioStreaming<List<Type_I_Format_Type<Type_I_DiscreteSampleFrequency<2>>>, List<AS_Isochronous_Audio_Data_Endpoint>>;
+using SpeakerStreamingInterface = AudioStreaming<List<Type_I_Format_Type<Type_I_DiscreteSampleFrequency<2>>>, List<CS_ASEndpoint, ASEndpoint>>;
+using MicrophoneStreamingInterface = AudioStreaming<List<Type_I_Format_Type<Type_I_DiscreteSampleFrequency<2>>>, List<CS_ASEndpoint>>;
 
 using Uac1Configuration = Configuration<
     List<
@@ -143,18 +143,26 @@ constexpr const SpeakerStreamingInterface speaker_interface = {
         },
     },
     .endpoints = {
-        AS_Isochronous_Audio_Data_Endpoint{
-            .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::OUT),
-            .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::Asynchronous),
-            .wMaxPacketSize = 196,
-            .bInterval = 1,
-            .bSynchAddress = EndpointAddress(0x01, EndpointDirection_t::IN),
+        CS_ASEndpoint{
+            .endpoint = {
+                .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::OUT),
+                .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::Asynchronous),
+                .wMaxPacketSize = 196,
+                .bInterval = 1,
+                .bRefresh = 0,
+                .bSynchAddress = EndpointAddress(0x01, EndpointDirection_t::IN),
+            },
+            .bmAttributes = CS_ASEndpointAttributes_t::SAMPLING_FREQUENCY,
+            .bLockDelayUnits = LockDelayUnits(LockDelayUnits_t::Milliseconds),
+            .wLockDelay = 0,
         },
-        Endpoint{
+        ASEndpoint{
             .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::IN),
             .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::No_Synchronization, UsageType_t::Feedback_endpoint),
             .wMaxPacketSize = 3,
-            .bInterval = 8,
+            .bInterval = 1,
+            .bRefresh = 2,
+            .bSynchAddress = EndpointAddress(0x00, EndpointDirection_t::OUT),
         },
     },
 };
@@ -183,12 +191,18 @@ constexpr const MicrophoneStreamingInterface microphone_interface = {
         },
     },
     .endpoints = {
-        AS_Isochronous_Audio_Data_Endpoint{
-            .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::OUT),
-            .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::Synchronous),
-            .wMaxPacketSize = 96,
-            .bInterval = 1,
-            .bSynchAddress = EndpointAddress(0x00, EndpointDirection_t::OUT),
+        CS_ASEndpoint{
+            .endpoint = {
+                .bEndpointAddress = EndpointAddress(0x01, EndpointDirection_t::OUT),
+                .bmAttributes = Endpoint::Attributes(TransferType_t::Isochronous, SynchronizationType_t::Synchronous),
+                .wMaxPacketSize = 96,
+                .bInterval = 1,
+                .bRefresh = 0,
+                .bSynchAddress = EndpointAddress(0x00, EndpointDirection_t::OUT),
+            },
+            .bmAttributes = CS_ASEndpointAttributes_t::SAMPLING_FREQUENCY,
+            .bLockDelayUnits = LockDelayUnits(LockDelayUnits_t::Milliseconds),
+            .wLockDelay = 0,
         },
     },
 };
