@@ -497,182 +497,69 @@ MaxPacketSize : detail::field<2> {
 /*  Collections																 */
 /*****************************************************************************/
 
-struct __attribute__((__packed__))
-Empty {
-	using type = detail::empty_type;
-	static constexpr unsigned count = 0;
+// Forward declaration
+template <typename... Items>
+struct __attribute__((__packed__)) ListType;
+
+// Base Case: 1 Element (Stops recursion before an empty struct is appended)
+template <typename Head>
+struct __attribute__((__packed__)) ListType<Head> {
+    Head head;
+
+    constexpr ListType() = default;
+    constexpr ListType(const Head& h) : head(h) {}
 };
+
+// Recursive Case: 2 or More Elements
+template <typename Head, typename Tail1, typename... TailRest>
+struct __attribute__((__packed__)) ListType<Head, Tail1, TailRest...> {
+    Head head;
+    ListType<Tail1, TailRest...> tail;
+
+    constexpr ListType() = default;
+
+    // Constructor forwards remaining items down the tail chain
+    constexpr ListType(Head h, Tail1 t1, TailRest... trest)
+        : head(h), tail(t1, trest...) {}
+};
+
+// Primary List Template (N >= 1)
+template <typename... Items>
+struct __attribute__((__packed__)) List {
+    static constexpr unsigned count = sizeof...(Items);
+    using type = ListType<Items...>;
+};
+
+// Specialization for 0 Elements
+template <>
+struct __attribute__((__packed__)) List<> {
+    static constexpr unsigned count = 0;
+    using type = detail::empty_type;
+};
+
+// Type alias for readability and compatibility
+using Empty = List<>;
 
 template<class Item, unsigned Count>
 struct __attribute__((__packed__))
 Array {
-	using type = Item[Count];
-	static constexpr unsigned count = Count;
+    using type = Item[Count];
+    static constexpr unsigned count = Count;
 };
 
-template<class ... Item>
-struct List;
-
-template<class Item0>
-struct __attribute__((__packed__))
-List<Item0> {
-	static constexpr unsigned count = 1;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-	};
-};
-template<class Item0, class Item1>
-struct __attribute__((__packed__))
-List<
-		Item0, Item1> {
-	static constexpr unsigned count = 2;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-		Item1 item1;
-	};
-};
-template<class Item0, class Item1, class Item2>
-struct __attribute__((__packed__))
-List<
-		Item0, Item1, Item2> {
-	static constexpr unsigned count = 3;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-		Item1 item1;
-		Item2 item2;
-	};
-};
-template<class Item0, class Item1, class Item2, class Item3>
-struct __attribute__((__packed__))
-List<
-		Item0, Item1, Item2, Item3> {
-	static constexpr unsigned count = 4;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-		Item1 item1;
-		Item2 item2;
-		Item3 item3;
-	};
-};
-template<class Item0, class Item1, class Item2, class Item3, class Item4>
-struct __attribute__((__packed__))
-List<
-		Item0, Item1, Item2, Item3, Item4> {
-	static constexpr unsigned count = 5;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-		Item1 item1;
-		Item2 item2;
-		Item3 item3;
-		Item4 item4;
-	};
-};
-template<class Item0, class Item1, class Item2, class Item3, class Item4,
-		class Item5>
-struct __attribute__((__packed__))
-List<Item0, Item1,
-		Item2, Item3, Item4, Item5> {
-	static constexpr unsigned count = 6;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-		Item1 item1;
-		Item2 item2;
-		Item3 item3;
-		Item4 item4;
-		Item5 item5;
-	};
-};
-template<class Item0, class Item1, class Item2, class Item3, class Item4,
-		class Item5, class Item6>
-struct __attribute__((__packed__))
-List<Item0,
-		Item1, Item2, Item3, Item4, Item5, Item6> {
-	static constexpr unsigned count = 7;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-		Item1 item1;
-		Item2 item2;
-		Item3 item3;
-		Item4 item4;
-		Item5 item5;
-		Item6 item6;
-	};
-};
-template<class Item0, class Item1, class Item2, class Item3, class Item4,
-		class Item5, class Item6, class Item7>
-struct __attribute__((__packed__))
-List<
-		Item0, Item1, Item2, Item3, Item4, Item5, Item6, Item7> {
-	static constexpr unsigned count = 8;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-		Item1 item1;
-		Item2 item2;
-		Item3 item3;
-		Item4 item4;
-		Item5 item5;
-		Item6 item6;
-		Item7 item7;
-	};
+// Access helper equivalent to tuple get<I>()
+template <std::size_t I, typename Head, typename... Tail>
+struct GetHelper {
+    static constexpr auto& get(ListType<Head, Tail...>& l) {
+        return GetHelper<I - 1, Tail...>::get(l.tail);
+    }
 };
 
-template<class Item0, class Item1, class Item2, class Item3, class Item4,
-		class Item5, class Item6, class Item7, class Item8>
-struct __attribute__((__packed__))
-List<Item0, Item1, Item2, Item3, Item4, Item5, Item6, Item7, Item8> {
-	static constexpr unsigned count = 8;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-		Item1 item1;
-		Item2 item2;
-		Item3 item3;
-		Item4 item4;
-		Item5 item5;
-		Item6 item6;
-		Item7 item7;
-		Item8 item8;
-	};
-};
-
-template<class Item0, class Item1, class Item2, class Item3, class Item4,
-		class Item5, class Item6, class Item7, class Item8, class Item9>
-struct __attribute__((__packed__))
-List<Item0, Item1, Item2, Item3, Item4, Item5, Item6, Item7, Item8, Item9> {
-	static constexpr unsigned count = 8;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-		Item1 item1;
-		Item2 item2;
-		Item3 item3;
-		Item4 item4;
-		Item5 item5;
-		Item6 item6;
-		Item7 item7;
-		Item8 item8;
-		Item9 item9;
-	};
-};
-
-template<class Item0, class Item1, class Item2, class Item3, class Item4,
-		class Item5, class Item6, class Item7, class Item8, class Item9,
-		class Item10>
-struct __attribute__((__packed__))
-List<Item0, Item1, Item2, Item3, Item4, Item5, Item6, Item7, Item8, Item9,
-	Item10> {
-	static constexpr unsigned count = 8;
-	struct __attribute__((__packed__)) type {
-		Item0 item0;
-		Item1 item1;
-		Item2 item2;
-		Item3 item3;
-		Item4 item4;
-		Item5 item5;
-		Item6 item6;
-		Item7 item7;
-		Item8 item8;
-		Item9 item9;
-		Item10 item10;
-	};
+template <typename Head, typename... Tail>
+struct GetHelper<0, Head, Tail...> {
+    static constexpr Head& get(ListType<Head, Tail...>& l) {
+        return l.head;
+    }
 };
 
 /*****************************************************************************/

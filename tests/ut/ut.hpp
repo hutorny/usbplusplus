@@ -10,7 +10,9 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
-#include "boost/ut.hpp"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#include <boost/ut.hpp>
 #pragma GCC diagnostic pop
 
 #include <array>
