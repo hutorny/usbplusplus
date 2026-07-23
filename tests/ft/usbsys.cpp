@@ -12,6 +12,7 @@
 #include <devices.hpp>
 #include <utf8.hpp>
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <cstring>
